@@ -23,4 +23,4 @@ Go 1.15 was used
 
 # Screenshot
 
-![](https://user-images.githubusercontent.com/14982936/103922394-96b70900-510b-11eb-9245-a35281ed0775.png)
+![](https://user-images.githubusercontent.com/14982936/103922637-ef86a180-510b-11eb-94b8-445679a033b7.png)
