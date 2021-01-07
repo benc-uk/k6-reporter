@@ -21,9 +21,15 @@ Example
 
 # Building & Running
 
-The tool can be run with `go run main.go` or a binary built with `go build`
+Packr v2 is required to build a standalone binary
 
-Go 1.15 was used
+```bash
+go get -u github.com/gobuffalo/packr/v2/packr2
+```
+
+Then run `./build.sh`
+
+Alternatively run in place with `go run main.go`
 
 # Screenshot
 
