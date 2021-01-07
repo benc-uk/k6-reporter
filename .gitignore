@@ -1,0 +1,4 @@
+*.json
+*.html
+k6-reporter
+main
