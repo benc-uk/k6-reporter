@@ -20,3 +20,7 @@ Example
 The tool can be run with `go run main.go` or a binary built with `go build`
 
 Go 1.15 was used
+
+# Screenshot
+
+![](https://user-images.githubusercontent.com/14982936/103922394-96b70900-510b-11eb-9245-a35281ed0775.png)
