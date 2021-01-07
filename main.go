@@ -5,10 +5,11 @@ import (
 	"html/template"
 	"log"
 	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/Masterminds/sprig/v3"
-	packr "github.com/gobuffalo/packr/v2"
+	"github.com/gobuffalo/packr/v2"
 )
 
 // ResultData is our main data struct
@@ -69,10 +70,10 @@ func main() {
 	}
 
 	// Wow I'm lazy!
-	resultData.Title = strings.ReplaceAll(os.Args[1], "_", " ")
-	resultData.Title = strings.ReplaceAll(resultData.Title, "results", "")
+	resultData.Title = filepath.Base(os.Args[1])
 	resultData.Title = strings.ReplaceAll(resultData.Title, ".json", "")
-	resultData.Title = strings.ReplaceAll(resultData.Title, "../", "")
+	resultData.Title = strings.ReplaceAll(resultData.Title, "_", " ")
+	resultData.Title = strings.Title(resultData.Title)
 
 	// Render template
 	tmpl.Execute(out, resultData)
