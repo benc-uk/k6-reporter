@@ -2,6 +2,10 @@
 
 Simple Go command line application to convert K6 result JSON into a HTML report
 
+The report will show all request groups, checks, HTTP metrics and other statistics
+
+Any HTTP metrics which have failed thresholds will be highlighted in red. Any group checks with more than 0 failures will also be shown in red.
+
 # Usage
 
 The command takes two arguments:
