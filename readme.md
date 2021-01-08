@@ -1,6 +1,6 @@
 # K6 HTML Report Converter
 
-Simple Go command line application to convert K6 result JSON into a HTML report.  
+Simple Go command line application to convert the results of a K6 load test into a HTML report.  
 [K6 is a modern, developer focued load testing tool](https://k6.io/)
 
 The report will show all request groups, checks, HTTP metrics and other statistics
@@ -11,7 +11,7 @@ Any HTTP metrics which have failed thresholds will be highlighted in red. Any gr
 
 The command takes two arguments:
 
-- The input JSON file, created with `--summary-export` parameter to `k6 run`
+- The input JSON file, which is the output of `k6 run` with the `--summary-export` parameter
 - The output HTML file, which will be created or overwritten.
 
 Example
