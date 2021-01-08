@@ -17,7 +17,7 @@ The command takes two arguments:
 Example
 
 ```bash
-./k6-report ./myresults.json report.html
+./k6-reporter ./myresults.json ./report.html
 ```
 
 # Building & Running
