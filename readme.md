@@ -28,7 +28,7 @@ Packr v2 is required to build a standalone binary
 go get -u github.com/gobuffalo/packr/v2/packr2
 ```
 
-Then run `./build.sh`
+Then run `./scripts/build.sh`
 
 Alternatively run in place with `go run main.go`
 

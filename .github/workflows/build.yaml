@@ -1,0 +1,27 @@
+name: CI & Build
+
+on:
+  push:
+  pull_request:
+    branches: [main]
+
+jobs:
+  check:
+    name: "Run lint and format"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: "Set Go version and paths"
+        uses: actions/setup-go@v2
+        with:
+          go-version: "^1.15.0"
+
+      - name: "Install extra test & build tools"
+        run: |
+          go get -u golang.org/x/lint/golint
+
+      - name: "Check code"
+        run: |
+          .github/gofmt-action.sh .
+          golint -set_exit_status

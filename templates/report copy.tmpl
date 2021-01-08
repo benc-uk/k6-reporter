@@ -32,13 +32,71 @@
         padding-bottom: 4px;
         border-bottom: solid 3px #cccccc;
       }
+      /**
+      * Tabs
+      */
+      .tabs {
+        display: flex;
+        flex-wrap: wrap; // make sure it wraps
+      }
+      .tabs label {
+        order: 1; // Put the labels first
+        display: block;
+        padding: 1rem 2rem;
+        margin-right: 0.2rem;
+        cursor: pointer;
+        background: #90CAF9;
+        font-weight: bold;
+        transition: background ease 0.2s;
+      }
+      .tabs .tab {
+        order: 99; // Put the tabs last
+        flex-grow: 1;
+        width: 100%;
+        display: none;
+        padding: 1rem;
+        background: #fff;
+      }
+      .tabs input[type="radio"] {
+        display: none;
+      }
+      .tabs input[type="radio"]:checked + label {
+        background: #fff;
+      }
+      .tabs input[type="radio"]:checked + label + .tab {
+        display: block;
+      }
     </style>
   </head>
   <body>
     <h1>🌋 K6 Load Test: {{ .Title }}</h1>
 
-    {{ if gt (len .RootGroup.Groups) 1 }}
+    <div class="tabs">
+      <input type="radio" name="tabs" id="tabone" checked="checked">
+      <label for="tabone">Tab One</label>
+      <div class="tab">
+        <h1>Tab One Content</h1>
+        <p>Lorem ipsum dolor</p>
+      </div>
+      
+      <input type="radio" name="tabs" id="tabtwo">
+      <label for="tabtwo">Tab Two</label>
+      <div class="tab">
+        <h1>Tab Two Content</h1>
+        Lorem ipsum dolor sit 
+      </div>
+      
+      <input type="radio" name="tabs" id="tabthree">
+      <label for="tabthree">Tab Three</label>
+      <div class="tab">
+        <h1>Tab Three Content</h1>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+      </div>
+    </div>
+
+
       <h2>👓 Request Groups</h1>
+      {{ if gt (len .RootGroup.Groups) 1 }}
       {{ range .RootGroup.Groups }}
         {{ if ne .Name "setup" }} 
           <h3>&bull; {{ .Name }}</h3>

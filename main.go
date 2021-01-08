@@ -2,8 +2,8 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"html/template"
-	"log"
 	"os"
 	"path/filepath"
 	"strings"
@@ -12,11 +12,15 @@ import (
 	"github.com/gobuffalo/packr/v2"
 )
 
-// ResultData is our main data struct
+// ResultData is our main data struct (the input K6 JSON)
 type ResultData struct {
-	Title     string
-	Metrics   map[string]interface{}
-	RootGroup RootGroup `json:"root_group"`
+	Title             string
+	ThresholdFailures int
+	ThresholdTotal    int
+	CheckFailures     int
+	CheckPasses       int
+	Metrics           map[string]interface{}
+	RootGroup         RootGroup `json:"root_group"`
 }
 
 // RootGroup hold all groups
@@ -38,43 +42,80 @@ type Check struct {
 }
 
 func main() {
-	templateBox := packr.New("Templates Box", ".")
-
+	// We package the template into the binary using packr
+	// Hopefully when Go 1.16 is release we can use an embed
+	templateBox := packr.New("Templates Box", "./templates")
 	templateString, err := templateBox.FindString("report.tmpl")
 	if err != nil {
-		log.Fatalln("Template unboxing error", err)
+		fmt.Println("Template unboxing error", err)
+		os.Exit(1)
 	}
-
 	tmpl, err := template.New("").Funcs(sprig.FuncMap()).Parse(templateString)
 	if err != nil {
-		log.Fatalln("Template file error", err)
+		fmt.Printf("Template file error", err)
+		os.Exit(1)
 	}
 
+	// Check args
 	if len(os.Args) < 3 {
-		log.Fatalln("Must supply two args, input result JSON file and output HTML file")
+		fmt.Printf("\nERROR! Must supply two args, input JSON file (from K6) and output HTML file")
+		os.Exit(1)
 	}
 
 	// Open input results JSON
 	resultFile, err := os.Open(os.Args[1])
 	if err != nil {
-		log.Fatalln("Input file error", err)
+		fmt.Println("Input file error", err)
+		os.Exit(1)
 	}
 	resultData := ResultData{}
 	err = json.NewDecoder(resultFile).Decode(&resultData)
-	// Ignore errors for good reason
+	// Ignore errors for good reason, metrics key holds a mix of stuff
 
 	// Open output HTML file
-	out, err := os.Create(os.Args[2])
+	outFile, err := os.Create(os.Args[2])
 	if err != nil {
-		log.Fatalln("Output file error", err)
+		fmt.Println("Output file error", err)
+		os.Exit(1)
 	}
 
-	// Wow I'm lazy!
+	// Some simple transform of the input filename into a readable title
 	resultData.Title = filepath.Base(os.Args[1])
 	resultData.Title = strings.ReplaceAll(resultData.Title, ".json", "")
 	resultData.Title = strings.ReplaceAll(resultData.Title, "_", " ")
 	resultData.Title = strings.Title(resultData.Title)
 
-	// Render template
-	tmpl.Execute(out, resultData)
+	// Count threshold failures/breaches
+	thresholdFailures := 0
+	thresholdTotal := 0
+	for _, metric := range resultData.Metrics {
+		metricMap := metric.(map[string]interface{})
+		if metricMap["thresholds"] != nil {
+			thresholds := metricMap["thresholds"].(map[string]interface{})
+			thresholdTotal++
+			for _, thres := range thresholds {
+				if thres.(bool) {
+					thresholdFailures++
+				}
+			}
+		}
+	}
+	resultData.ThresholdFailures = thresholdFailures
+	resultData.ThresholdTotal = thresholdTotal
+
+	// Count threshold failures/breaches
+	checkFailures := 0
+	checkPasses := 0
+	for _, group := range resultData.RootGroup.Groups {
+		for _, check := range group.Checks {
+			checkFailures += check.Fails
+			checkPasses += check.Passes
+		}
+	}
+	resultData.CheckFailures = checkFailures
+	resultData.CheckPasses = checkPasses
+
+	fmt.Printf("\nDone! Output HTML written to: %s\n", outFile.Name())
+	// Render template into output fine, and that's it
+	tmpl.Execute(outFile, resultData)
 }
