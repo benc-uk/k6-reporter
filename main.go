@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/Masterminds/sprig/v3"
+	"github.com/davecgh/go-spew/spew"
 	"github.com/gobuffalo/packr/v2"
 )
 
@@ -26,6 +27,7 @@ type ResultData struct {
 // RootGroup hold all groups
 type RootGroup struct {
 	Groups map[string]Group
+	Checks map[string]Check
 }
 
 // Group is a single group
@@ -115,6 +117,7 @@ func main() {
 	resultData.CheckFailures = checkFailures
 	resultData.CheckPasses = checkPasses
 
+	spew.Dump(resultData.RootGroup)
 	fmt.Printf("\nDone! Output HTML written to: %s\n", outFile.Name())
 	// Render template into output fine, and that's it
 	tmpl.Execute(outFile, resultData)
