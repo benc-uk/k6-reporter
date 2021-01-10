@@ -4,6 +4,7 @@ go 1.15
 
 require (
 	github.com/Masterminds/sprig/v3 v3.2.0
+	github.com/davecgh/go-spew v1.1.1
 	github.com/gobuffalo/packr/v2 v2.8.1
 	github.com/karrick/godirwalk v1.16.1 // indirect
 	github.com/rogpeppe/go-internal v1.6.2 // indirect

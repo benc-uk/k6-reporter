@@ -1,5 +1,5 @@
 #!/bin/bash
 
 packr2
-go build -o k6-reporter
+go build -o bin/k6-reporter
 packr2 clean
