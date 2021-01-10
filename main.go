@@ -9,7 +9,6 @@ import (
 	"strings"
 
 	"github.com/Masterminds/sprig/v3"
-	"github.com/davecgh/go-spew/spew"
 	"github.com/gobuffalo/packr/v2"
 )
 
@@ -44,30 +43,34 @@ type Check struct {
 }
 
 func main() {
+	fmt.Println("\n\033[36m╔════════════════════════════════════════════╗")
+	fmt.Println("║    \033[33m🗻 K6 HTML Report Converter 📜\033[36m   \033[35mv1.1   \033[36m║")
+	fmt.Println("╚════════════════════════════════════════════╝\033[0m")
+
 	// We package the template into the binary using packr
 	// Hopefully when Go 1.16 is release we can use an embed
 	templateBox := packr.New("Templates Box", "./templates")
 	templateString, err := templateBox.FindString("report.tmpl")
 	if err != nil {
-		fmt.Println("Template unboxing error", err)
+		fmt.Println("💥 Template unboxing error", err)
 		os.Exit(1)
 	}
 	tmpl, err := template.New("").Funcs(sprig.FuncMap()).Parse(templateString)
 	if err != nil {
-		fmt.Printf("Template file error", err)
+		fmt.Println("💥 Template file error", err)
 		os.Exit(1)
 	}
 
 	// Check args
 	if len(os.Args) < 3 {
-		fmt.Printf("\nERROR! Must supply two args, input JSON file (from K6) and output HTML file")
+		fmt.Printf("\n💬 \033[31mERROR! Must supply two args, input JSON file (from K6) and output HTML file")
 		os.Exit(1)
 	}
 
 	// Open input results JSON
 	resultFile, err := os.Open(os.Args[1])
 	if err != nil {
-		fmt.Println("Input file error", err)
+		fmt.Println("💥 Input file error", err)
 		os.Exit(1)
 	}
 	resultData := ResultData{}
@@ -77,7 +80,7 @@ func main() {
 	// Open output HTML file
 	outFile, err := os.Create(os.Args[2])
 	if err != nil {
-		fmt.Println("Output file error", err)
+		fmt.Println("💥 Output file error", err)
 		os.Exit(1)
 	}
 
@@ -117,8 +120,7 @@ func main() {
 	resultData.CheckFailures = checkFailures
 	resultData.CheckPasses = checkPasses
 
-	spew.Dump(resultData.RootGroup)
-	fmt.Printf("\nDone! Output HTML written to: %s\n", outFile.Name())
+	fmt.Printf("\n📜 Done! Output HTML written to: %s\n", outFile.Name())
 	// Render template into output fine, and that's it
 	tmpl.Execute(outFile, resultData)
 }
