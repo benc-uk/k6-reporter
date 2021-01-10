@@ -63,7 +63,7 @@ func main() {
 
 	// Check args
 	if len(os.Args) < 3 {
-		fmt.Printf("\n💬 \033[31mERROR! Must supply two args, input JSON file (from K6) and output HTML file")
+		fmt.Printf("\n💬 \033[31mERROR! Must supply two args, input JSON file (from K6) and output HTML file\n")
 		os.Exit(1)
 	}
 
