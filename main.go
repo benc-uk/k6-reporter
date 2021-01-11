@@ -99,7 +99,7 @@ func main() {
 			thresholds := metricMap["thresholds"].(map[string]interface{})
 			thresholdTotal++
 			for _, thres := range thresholds {
-				if thres.(bool) {
+				if !thres.(bool) {
 					thresholdFailures++
 				}
 			}
