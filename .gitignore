@@ -1,3 +1,4 @@
 *.json
 *.html
 bin/
+*.csv

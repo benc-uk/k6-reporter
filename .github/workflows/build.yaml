@@ -15,13 +15,8 @@ jobs:
       - name: "Set Go version and paths"
         uses: actions/setup-go@v2
         with:
-          go-version: "^1.15.0"
-
-      - name: "Install extra test & build tools"
-        run: |
-          go get -u golang.org/x/lint/golint
+          go-version: "^1.16.0"
 
       - name: "Check code"
         run: |
-          .github/gofmt-action.sh .
-          golint -set_exit_status
+          make lint

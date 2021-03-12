@@ -1,7 +1,10 @@
+// Main executable
 package main
 
 import (
+	_ "embed"
 	"encoding/json"
+	"flag"
 	"fmt"
 	"html/template"
 	"os"
@@ -9,7 +12,6 @@ import (
 	"strings"
 
 	"github.com/Masterminds/sprig/v3"
-	"github.com/gobuffalo/packr/v2"
 )
 
 // ResultData is our main data struct (the input K6 JSON)
@@ -42,50 +44,48 @@ type Check struct {
 	Fails  int
 }
 
+//go:embed "templates/report.tmpl"
+var templateString string
+
 func main() {
 	fmt.Println("\n\033[36m╔════════════════════════════════════════════╗")
-	fmt.Println("║    \033[33m🗻 K6 HTML Report Converter 📜\033[36m   \033[35mv1.1   \033[36m║")
+	fmt.Println("║    \033[33m🗻 K6 HTML Report Converter 📜\033[36m   \033[35mv1.2   \033[36m║")
 	fmt.Println("╚════════════════════════════════════════════╝\033[0m")
 
-	// We package the template into the binary using packr
-	// Hopefully when Go 1.16 is release we can use an embed
-	templateBox := packr.New("Templates Box", "./templates")
-	templateString, err := templateBox.FindString("report.tmpl")
-	if err != nil {
-		fmt.Println("💥 Template unboxing error", err)
+	var inFilename = flag.String("infile", "", "K6 JSON result summary file")
+	var outFilename = flag.String("outfile", "./out.html", "Output HTML filename")
+	flag.Parse()
+	if *inFilename == "" {
+		fmt.Printf("\n🚫 Input K6 JSON file not specified, please add -infile\n\n")
+		flag.PrintDefaults()
 		os.Exit(1)
 	}
+
 	tmpl, err := template.New("").Funcs(sprig.FuncMap()).Parse(templateString)
 	if err != nil {
 		fmt.Println("💥 Template file error", err)
 		os.Exit(1)
 	}
 
-	// Check args
-	if len(os.Args) < 3 {
-		fmt.Printf("\n💬 \033[31mERROR! Must supply two args, input JSON file (from K6) and output HTML file\n")
-		os.Exit(1)
-	}
-
 	// Open input results JSON
-	resultFile, err := os.Open(os.Args[1])
+	resultFile, err := os.Open(*inFilename)
 	if err != nil {
 		fmt.Println("💥 Input file error", err)
 		os.Exit(1)
 	}
 	resultData := ResultData{}
-	err = json.NewDecoder(resultFile).Decode(&resultData)
+	_ = json.NewDecoder(resultFile).Decode(&resultData)
 	// Ignore errors for good reason, metrics key holds a mix of stuff
 
 	// Open output HTML file
-	outFile, err := os.Create(os.Args[2])
+	outFile, err := os.Create(*outFilename)
 	if err != nil {
 		fmt.Println("💥 Output file error", err)
 		os.Exit(1)
 	}
 
 	// Some simple transform of the input filename into a readable title
-	resultData.Title = filepath.Base(os.Args[1])
+	resultData.Title = filepath.Base(*inFilename)
 	resultData.Title = strings.ReplaceAll(resultData.Title, ".json", "")
 	resultData.Title = strings.ReplaceAll(resultData.Title, "_", " ")
 	resultData.Title = strings.Title(resultData.Title)
@@ -99,7 +99,7 @@ func main() {
 			thresholds := metricMap["thresholds"].(map[string]interface{})
 			thresholdTotal++
 			for _, thres := range thresholds {
-				if !thres.(bool) {
+				if thres.(bool) {
 					thresholdFailures++
 				}
 			}
@@ -122,5 +122,5 @@ func main() {
 
 	fmt.Printf("\n📜 Done! Output HTML written to: %s\n", outFile.Name())
 	// Render template into output fine, and that's it
-	tmpl.Execute(outFile, resultData)
+	_ = tmpl.Execute(outFile, resultData)
 }
