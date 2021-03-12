@@ -20,3 +20,7 @@ jobs:
       - name: "Check code"
         run: |
           make lint
+
+      - name: "Run build"
+        run: |
+          make build

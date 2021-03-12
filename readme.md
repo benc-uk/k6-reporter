@@ -1,34 +1,55 @@
 # K6 HTML Report Converter
 
 Simple Go command line application to convert the results of a K6 load test into a HTML report.  
-[K6 is a modern, developer focued load testing tool](https://k6.io/)
+[K6 is a modern, developer focused load testing tool](https://k6.io/)
 
 The report will show all request groups, checks, HTTP metrics and other statistics
 
 Any HTTP metrics which have failed thresholds will be highlighted in red. Any group checks with more than 0 failures will also be shown in red.
 
+This project uses Go templates, [Sprig](http://masterminds.github.io/sprig/) and Go 1.16 embedding
+
+![](https://img.shields.io/github/license/benc-uk/k6-reporter)
+![](https://img.shields.io/github/last-commit/benc-uk/k6-reporter)
+![](https://img.shields.io/github/release/benc-uk/k6-reporter)
+![](https://img.shields.io/github/checks-status/benc-uk/k6-reporter/main)
+
 # Usage
 
-The command takes two arguments:
+Command usage:
 
-- The input JSON file, which is the output of `k6 run` with the `--summary-export` parameter
-- The output HTML file, which will be created or overwritten.
+```
+╔════════════════════════════════════════════╗
+║   🗻 K6 HTML Report Converter 📜  v1.2.0  ║
+╚════════════════════════════════════════════╝
+
+Usage of k6-reporter:
+
+  -infile string
+        K6 JSON result summary file
+  -outfile string
+        Output HTML filename (default "./out.html")
+```
 
 Example
 
 ```bash
-./k6-reporter ./myresults.json ./report.html
+./k6-reporter -infile ./myresults.json -outfile ./report.html
 ```
 
-# Building & Running
+# Building Locally
 
-Packr v2 is required to build a standalone binary
+Build a binary executable with
 
-```bash
-go get -u github.com/gobuffalo/packr/v2/packr2
+```
+make build
 ```
 
-Then run `./scripts/build.sh`
+Or run from source with
+
+```
+make run
+```
 
 Alternatively run in place with `go run main.go`
 

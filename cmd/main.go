@@ -46,10 +46,11 @@ type Check struct {
 
 //go:embed "templates/report.tmpl"
 var templateString string
+var version = "1.2.0" // App version number, set at build time
 
 func main() {
 	fmt.Println("\n\033[36m╔════════════════════════════════════════════╗")
-	fmt.Println("║    \033[33m🗻 K6 HTML Report Converter 📜\033[36m   \033[35mv1.2   \033[36m║")
+	fmt.Printf("║   \033[33m🗻 K6 HTML Report Converter 📜\033[36m   \033[35mv%s  \033[36m║\n", version)
 	fmt.Println("╚════════════════════════════════════════════╝\033[0m")
 
 	var inFilename = flag.String("infile", "", "K6 JSON result summary file")
