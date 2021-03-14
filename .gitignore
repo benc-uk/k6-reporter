@@ -1,4 +1,4 @@
 *.json
 *.html
-bin/
+**/bin/
 *.csv

@@ -1,6 +1,6 @@
 # Example and common variables
-VERSION := 1.2.0
-BUILD_INFO := Manual build 
+VERSION := 1.2.1
+BUILD_INFO ?= Manual build 
 SRC_DIR := ./cmd
 
 .PHONY: help build lint lint-fix

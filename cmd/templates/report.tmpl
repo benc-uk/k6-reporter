@@ -139,7 +139,7 @@
       <div class="box">
         <h4>Requests</h4>
         <i class="fas fa-globe icon"></i>
-        <div class="bignum">{{ .Metrics.grpc_reqs.count }}</div>
+        <div class="bignum">{{ .Metrics.http_reqs.count }}</div>
       </div>
       <div class="box {{ if gt .ThresholdFailures 0 }} failed {{ end }}">
         <h4>Breached Thresholds</h4>
@@ -235,8 +235,8 @@
           <div class="box metricbox">
             <h4>Requests</h4>
             <i class="fas fa-globe icon"></i>
-            <div class="row"><div>Total</div><div>{{ .Metrics.grpc_reqs.count }}</div></div>
-            <div class="row"><div>Rate</div><div>{{ round .Metrics.grpc_reqs.rate 1 }}/s</div></div>
+            <div class="row"><div>Total</div><div>{{ .Metrics.http_reqs.count }}</div></div>
+            <div class="row"><div>Rate</div><div>{{ round .Metrics.http_reqs.rate 1 }}/s</div></div>
           </div>
 
           <div class="box metricbox">
