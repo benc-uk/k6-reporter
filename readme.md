@@ -53,6 +53,18 @@ make run
 
 Alternatively run in place with `go run main.go`
 
+## Container image
+
+Build the container image :
+```
+make image
+```
+
+Run the image with for example a local `reports` folder :
+```
+docker run --rm -it -v $(pwd)/reports:/reports ghcr.io/k6-reporter -infile /reports/myresults.json -outfile /reports/report.html
+```
+
 # Screenshots
 
 ![](https://user-images.githubusercontent.com/14982936/104111528-d1bb6700-52da-11eb-9f98-27d207c7747b.png)
