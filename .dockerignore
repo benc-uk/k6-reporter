@@ -1,0 +1,22 @@
+# Standard stuff
+Dockerfile*
+**/*Dockerfile*
+docker-compose*
+.dockerignore
+.git
+.gitignore
+readme.md
+**/readme.md
+**/LICENSE
+.vscode/
+
+# Outputs, binaries etc
+**/bin/
+**/obj/
+**/dist/
+
+# Project specific folders
+*.json
+*.html
+*.csv
+reports/*

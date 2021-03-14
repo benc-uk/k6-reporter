@@ -5,6 +5,9 @@ on:
   pull_request:
     branches: [main]
 
+env:
+  IMAGE_NAME: k6-reporter
+
 jobs:
   check:
     name: "Run lint and format"
@@ -24,3 +27,19 @@ jobs:
       - name: "Run build"
         run: |
           make build
+
+  build-image:
+    runs-on: ubuntu-latest
+    needs: [check]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      # Build image
+      - name: Build the container image
+        run: make image IMAGE_REPO=$GITHUB_ACTOR/$IMAGE_NAME
+      # Only when pushing to default branch (e.g. master or main), then push image to registry
+      # - name: Push to container registry
+      #   if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+      #   run: |
+      #     echo ${{ secrets.REGISTRY_PASSWORD }} | docker login $IMAGE_REG -u $GITHUB_ACTOR --password-stdin
+      #     make push IMAGE_REPO=$GITHUB_ACTOR/$IMAGE_NAME

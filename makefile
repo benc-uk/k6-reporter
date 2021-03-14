@@ -3,7 +3,13 @@ VERSION := 1.2.1
 BUILD_INFO ?= Manual build 
 SRC_DIR := ./cmd
 
-.PHONY: help build lint lint-fix
+# Most likely want to override these when calling `make image`
+IMAGE_REG ?= ghcr.io
+IMAGE_REPO ?= k6-reporter
+IMAGE_TAG ?= latest
+IMAGE_PREFIX := $(IMAGE_REG)/$(IMAGE_REPO)
+
+.PHONY: help build lint lint-fix image push
 .DEFAULT_GOAL := help
 
 help:  ## This help message :)
@@ -27,3 +33,14 @@ lint:  ## Lint & format, will not fix but sets exit code on error
 lint-fix:  ## Lint & format, will try to fix errors and modify code
 	@which golangci-lint > /dev/null || go get github.com/golangci/golangci-lint/cmd/golangci-lint
 	golangci-lint run $(SRC_DIR)/... --fix 
+
+################################################################################
+image:  ## Build container image
+	docker build  --file ./Dockerfile \
+	--build-arg BUILD_INFO="$(BUILD_INFO)" \
+	--build-arg VERSION="$(VERSION)" \
+	--tag $(IMAGE_PREFIX):$(IMAGE_TAG) . 
+
+################################################################################
+push:  ## Push container image
+	docker push $(IMAGE_PREFIX):$(IMAGE_TAG)
