@@ -1,15 +1,18 @@
+//
+// Generate HTML report from K6 summary data
+// Ben Coleman, March 2021
+//
+
 import ejs from "./node_modules/ejs/ejs.js";
 
+// TODO: Find a better way of storing the template, this kinda sucks
 const template = `
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/purecss@2.0.3/build/pure-min.css"
-      crossorigin="anonymous"
-    />
+    <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.3/build/pure-min.css" crossorigin="anonymous">
+
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.1/css/all.css" integrity="sha384-vp86vTRFVJgpjF9jiIGPEEqYqlDwgyBgEF109VFjmqGmIY/Y4HV4d3Gp2irVfcrp" crossorigin="anonymous">
 
     <link rel="shortcut icon" href="https://raw.githubusercontent.com/benc-uk/k6-reporter/main/assets/icon.png" type="image/png">
@@ -140,8 +143,12 @@ const template = `
       }
     </style>
   </head>
+
   <body>
-    <h1><svg style="vertical-align:middle" width="50" height="45" viewBox="0 0 50 45" fill="none" class="footer-module--logo--_lkxx"><path d="M31.968 34.681a2.007 2.007 0 002.011-2.003c0-1.106-.9-2.003-2.011-2.003a2.007 2.007 0 00-2.012 2.003c0 1.106.9 2.003 2.012 2.003z" fill="#7D64FF"></path><path d="M39.575 0L27.154 16.883 16.729 9.31 0 45h50L39.575 0zM23.663 37.17l-2.97-4.072v4.072h-2.751V22.038l2.75 1.989v7.66l3.659-5.014 2.086 1.51-3.071 4.21 3.486 4.776h-3.189v.001zm8.305.17c-2.586 0-4.681-2.088-4.681-4.662 0-1.025.332-1.972.896-2.743l4.695-6.435 2.086 1.51-2.239 3.07a4.667 4.667 0 013.924 4.6c0 2.572-2.095 4.66-4.681 4.66z" fill="#7D64FF"></path></svg> &nbsp; K6 Load Test: <%= title %></h1>
+    <h1>
+      <svg style="vertical-align:middle" width="50" height="45" viewBox="0 0 50 45" fill="none" class="footer-module--logo--_lkxx"><path d="M31.968 34.681a2.007 2.007 0 002.011-2.003c0-1.106-.9-2.003-2.011-2.003a2.007 2.007 0 00-2.012 2.003c0 1.106.9 2.003 2.012 2.003z" fill="#7D64FF"></path><path d="M39.575 0L27.154 16.883 16.729 9.31 0 45h50L39.575 0zM23.663 37.17l-2.97-4.072v4.072h-2.751V22.038l2.75 1.989v7.66l3.659-5.014 2.086 1.51-3.071 4.21 3.486 4.776h-3.189v.001zm8.305.17c-2.586 0-4.681-2.088-4.681-4.662 0-1.025.332-1.972.896-2.743l4.695-6.435 2.086 1.51-2.239 3.07a4.667 4.667 0 013.924 4.6c0 2.572-2.095 4.66-4.681 4.66z" fill="#7D64FF"></path></svg> 
+      &nbsp; K6 Load Test: <%= title %>
+    </h1>
 
     <div class="row">
       <div class="box">
@@ -209,19 +216,20 @@ const template = `
         </table>
         <br>
         &nbsp;&nbsp; Note. All times are in milli-seconds
-      </div>
+      </div> 
+      <!-- ---- end tab ---- -->
 
       <input type="radio" name="tabs" id="tabtwo">
       <label for="tabtwo"><i class="fas fa-chart-line"></i> &nbsp; Other Stats</label>
       <div class="tab">
         <div class="row">
           <% if (data.metrics.checks) { %>
-          <div class="box metricbox">
-            <h4>Checks</h4>
-            <i class="fas fa-eye icon"></i>
-            <div class="row"><div>Passed</div><div><%= data.metrics.checks.values.passes %></div></div>
-            <div class="row"><div>Failed</div><div><%= data.metrics.checks.values.fails %></div></div>
-          </div>
+            <div class="box metricbox">
+              <h4>Checks</h4>
+              <i class="fas fa-eye icon"></i>
+              <div class="row"><div>Passed</div><div><%= data.metrics.checks.values.passes %></div></div>
+              <div class="row"><div>Failed</div><div><%= data.metrics.checks.values.fails %></div></div>
+            </div>
           <% } %>
 
           <div class="box metricbox">
@@ -261,7 +269,8 @@ const template = `
             <div class="row"><div>Rate</div><div><%= (data.metrics.data_sent.values.rate/1000000).toFixed(2) %> mB/s</div></div>
           </div>   
         </div>
-      </div>      
+      </div>  
+      <!-- ---- end tab ---- -->     
 
       <input type="radio" name="tabs" id="tabthree">
       <label for="tabthree"><i class="fas fa-tasks"></i> Checks & Groups</label>
@@ -296,10 +305,10 @@ const template = `
           <% for(check of data.root_group.checks) { %>
             <tr class="checkDetails <% if(check.fails > 0) { %>failed<% } %>"><td width="50%"><%= check.name %></td><td><%= check.passes %></td><td><%= check.fails %></td></tr>
           <% } %>
-        </table>
-            
-      </div>      
-    <div><!-- end tabs -->
+        </table>     
+      </div> 
+      <!-- ---- end tab ---- -->
+    <div>
 `;
 
 //
@@ -355,7 +364,7 @@ export function htmlReport(data, opts = {filename: "summary.html", title: new Da
     checkPasses,
   });
 
-  // Return a handlesummary result object
+  // Return a handleSummary result object
   // See https://k6.io/docs/results-visualization/end-of-test-summary#handlesummary-callback
   let result = {};
   result[opts.filename] = html;
