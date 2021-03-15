@@ -199,23 +199,79 @@ const template = `
                 }
               }
 
-              for(metricName of metricListSorted) { 
+              for(metricName of standardMetrics) { 
+                if(!data.metrics[metricName]) { continue }
                 var metric = data.metrics[metricName] 
-                if(!metric.values.avg) { continue }
-                if(metricName.includes("{")) { continue } %>
+            %>
               <tr>
-                <td><%= metricName %></td>
-                <td class="<%= checkFailed(metric, 'avg') %>"><%= metric.values.avg.toFixed(2) %></td>
-                <td class="<%= checkFailed(metric, 'max') %>"><%= metric.values.max.toFixed(2) %></td>
-                <td class="<%= checkFailed(metric, 'med') %>"><%= metric.values.meds.toFixed(2) %></td>
-                <td class="<%= checkFailed(metric, 'min') %>"><%= metric.values.min.toFixed(2) %></td>
-                <td class="<%= checkFailed(metric, 'p(90)') %>"><%= metric.values['p(90)'].toFixed(2) %></td>
-                <td class="<%= checkFailed(metric, 'p(95)') %>"><%= metric.values['p(95)'].toFixed(2) %></td>
+                <td><b><%= metricName %></b></td>
+                <% if(metric.values.avg) { %>
+                  <td class="<%= checkFailed(metric, 'avg') %>"><%= metric.values.avg.toFixed(2) %></td>
+                <% } else { %>
+                  <td>-</td>
+                <% } %>
+
+                <% if(metric.values.max) { %>
+                  <td class="<%= checkFailed(metric, 'max') %>"><%= metric.values.max.toFixed(2) %></td>
+                <% } else { %>
+                  <td>-</td>
+                <% } %>  
+
+                <% if(metric.values.med) { %>
+                  <td class="<%= checkFailed(metric, 'med') %>"><%= metric.values.med.toFixed(2) %></td>
+                <% } else { %>
+                  <td>-</td>
+                <% } %>  
+                
+                <% if(metric.values.min) { %>
+                  <td class="<%= checkFailed(metric, 'min') %>"><%= metric.values.min.toFixed(2) %></td>
+                <% } else { %>
+                  <td>-</td>
+                <% } %>   
+                              
+                <% if(metric.values['p(90)']) { %>
+                  <td class="<%= checkFailed(metric, 'p(90)') %>"><%= metric.values['p(90)'].toFixed(2) %></td>
+                <% } else { %>
+                  <td>-</td>
+                <% } %>
+
+                <% if(metric.values['p(95)']) { %>
+                  <td class="<%= checkFailed(metric, 'p(95)') %>"><%= metric.values['p(95)'].toFixed(2) %></td>
+                <% } else { %>
+                  <td>-</td>
+                <% } %>
               </tr>
             <% } %>
           </tbody>
         </table>
         <br>
+
+        <h2>Custom Metrics</h2>
+        <% for(metricName in data.metrics) {
+          if(standardMetrics.includes(metricName) || otherMetrics.includes(metricName)) { continue }
+          var metric = data.metrics[metricName] 
+        %>
+          <table class="pure-table pure-table-striped">
+            <tbody>
+              <thead>     
+                <tr>
+                  <th></th>
+                  <% for(valueName in metric.values) { %>
+                    <th><%= valueName %></th>
+                  <% } %>
+                </tr>
+              </thead>
+              <tr>
+                <td><b><%= metricName %></b></td>
+                <% for(valueName in metric.values) { %>
+                  <td><%= metric.values[valueName].toFixed(2) %></td>
+                <% } %>
+              </tr>
+            </tbody>
+          </table>
+          <br>
+        <% } %>
+
         &nbsp;&nbsp; Note. All times are in milli-seconds
       </div> 
       <!-- ---- end tab ---- -->
@@ -310,16 +366,20 @@ const template = `
       </div> 
       <!-- ---- end tab ---- -->
     </div>
+    <footer>K6 Reporter v<%= version %> - Ben Coleman 2021, <a href="https://github.com/benc-uk/k6-reporter">[GitHub]</a></footer>
   </body>
 </html>
 `;
-const version = "0.0.1";
+const version = "0.0.2";
 
 //
 // Main function should be imported and wrapped with the function handleSummary
 //
 // prettier-ignore
-export function htmlReport(data, opts = {filename: "summary.html", title: new Date().toISOString().slice(0, 16).replace("T", " ")}) {
+export function htmlReport(data, opts = {}) {
+  if(!opts.filename) opts.filename =  "summary.html" 
+  if(!opts.title) opts.title = new Date().toISOString().slice(0, 16).replace("T", " ")
+
   console.log(`[k6-reporter v${version}] Generating HTML summary report as: ${opts.filename}`)
   let metricListSorted = []
 
@@ -338,7 +398,7 @@ export function htmlReport(data, opts = {filename: "summary.html", title: new Da
   }
   
   // Sorted list used for reporting in order
-  metricListSorted.sort()
+  //metricListSorted.sort()
 
   // Count the checks and those that have passed or failed
   // NOTE. Nested groups are not checked!
@@ -358,15 +418,21 @@ export function htmlReport(data, opts = {filename: "summary.html", title: new Da
     }
   }
 
+  const standardMetrics = ["grpc_req_duration", "http_req_duration", "http_req_waiting", "http_req_connecting", "http_req_tls_handshaking", "http_req_sending", "http_req_receiving", "http_req_blocked", "iteration_duration", "group_duration"]
+
+  const otherMetrics = ["iterations", "data_sent", "checks", "http_reqs", "data_received", "vus_max", "vus", "http_req_failed", "http_req_duration{expected_response:true}"]
+
   // Render the template
   const html = ejs.render(template, {
     data,
     title: opts.title,
-    metricListSorted,
+    standardMetrics,
+    otherMetrics,
     thresholdFailures,
     thresholdCount,
     checkFailures,
     checkPasses,
+    version
   });
 
   // Return a handleSummary result object
