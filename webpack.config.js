@@ -11,4 +11,13 @@ module.exports = {
   },
 
   plugins: [new CleanWebpackPlugin()],
+
+  module: {
+    rules: [
+      {
+        test: /\.ejs/,
+        type: "asset/source",
+      },
+    ],
+  },
 };

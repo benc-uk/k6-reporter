@@ -1,5 +1,9 @@
 # K6 HTML Report Converter
 
+### 🎇 NOTE - This version is no longer maintained, it's kept here purely for reference purposes
+
+---
+
 Simple Go command line application to convert the results of a K6 load test into a HTML report.  
 [K6 is a modern, developer focused load testing tool](https://k6.io/)
 
@@ -56,11 +60,13 @@ Alternatively run in place with `go run main.go`
 ## Container image
 
 Build the container image :
+
 ```
 make image
 ```
 
 Run the image with for example a local `reports` folder :
+
 ```
 docker run --rm -it -v $(pwd)/reports:/reports ghcr.io/k6-reporter -infile /reports/myresults.json -outfile /reports/report.html
 ```
