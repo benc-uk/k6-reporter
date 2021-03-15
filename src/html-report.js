@@ -3,9 +3,10 @@
 // Ben Coleman, March 2021
 //
 
-import ejs from "./node_modules/ejs/ejs.js";
+// Have to import ejs this way, nothing else works
+import ejs from "../node_modules/ejs/ejs.min.js";
 
-// TODO: Find a better way of storing the template, this kinda sucks
+// Note. Having the template here sucks, but we can't use fs or anything that can read files
 const template = `
 <!DOCTYPE html>
 <html lang="en">
@@ -171,8 +172,8 @@ const template = `
     <br>
     
     <div class="tabs">
-    <input type="radio" name="tabs" id="tabone" checked="checked">
-    <label for="tabone"><i class="far fa-clock"></i> &nbsp; Request Metrics</label>
+      <input type="radio" name="tabs" id="tabone" checked="checked">
+      <label for="tabone"><i class="far fa-clock"></i> &nbsp; Request Metrics</label>
       <div class="tab">
         <table class="pure-table pure-table-striped">
           <tbody>
@@ -308,14 +309,18 @@ const template = `
         </table>     
       </div> 
       <!-- ---- end tab ---- -->
-    <div>
+    </div>
+  </body>
+</html>
 `;
+const version = "0.0.1";
 
 //
 // Main function should be imported and wrapped with the function handleSummary
 //
 // prettier-ignore
 export function htmlReport(data, opts = {filename: "summary.html", title: new Date().toISOString().slice(0, 16).replace("T", " ")}) {
+  console.log(`[k6-reporter v${version}] Generating HTML summary report as: ${opts.filename}`)
   let metricListSorted = []
 
   // Count the thresholds and those that have failed
@@ -352,7 +357,7 @@ export function htmlReport(data, opts = {filename: "summary.html", title: new Da
       checkPasses += passes;
     }
   }
-  
+
   // Render the template
   const html = ejs.render(template, {
     data,

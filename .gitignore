@@ -4,3 +4,4 @@
 bin/*
 *.csv
 reports/*
+node_modules/

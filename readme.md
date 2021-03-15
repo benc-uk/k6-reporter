@@ -17,10 +17,10 @@ Any HTTP metrics which have failed thresholds will be highlighted in red. Any gr
 
 To use, add this module to your test code.
 
-Import the `htmlReport` function from the module hosted remotely on GitHub
+Import the `htmlReport` function from the bundled module hosted remotely on GitHub
 
 ```js
-import { htmlReport } from "https://raw.githubusercontent.com/benc-uk/k6-reporter/main/html-report.js";
+import { htmlReport } from "https://raw.githubusercontent.com/benc-uk/k6-reporter/main/dist/bundle.js";
 ```
 
 Then outside the test's default function, wrap it with the `handleSummary(data)` function which [K6 calls at the end of any test](https://github.com/loadimpact/k6/pull/1768), as follows:
