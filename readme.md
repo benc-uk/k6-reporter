@@ -15,6 +15,8 @@ Any HTTP metrics which have failed thresholds will be highlighted in red. Any gr
 
 # Usage
 
+This extension to K6 is intended to be used by adding into your K6 test code (JavaScript) and utilizes the _handleSummary_ callback hook, added to K6 v0.30.0. When your test completes a HTML file will be written to teh filesystem, containing a formatted and easy to consume version of the test summary data
+
 To use, add this module to your test code.
 
 Import the `htmlReport` function from the bundled module hosted remotely on GitHub
@@ -34,7 +36,7 @@ export function handleSummary(data) {
 The **htmlReport** function accepts an optional options map as a second parameter, with the following properties
 
 ```ts
-filename string  // Filename of HTML output
+filename string  // Filename of HTML output, can include the path
 title    string  // Title of the report, defaults to current date
 ```
 

@@ -1,0 +1,32 @@
+{
+  "name": "k6-reporter",
+  "version": "1.0.0",
+  "description": "Export K6 test summary as a HTML report",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/benc-uk/k6-reporter.git"
+  },
+  "keywords": [
+    "k6",
+    "load-testing",
+    "reporting"
+  ],
+  "scripts": {
+    "build": "webpack",
+    "watch": "webpack --config webpack.config.dev.js",
+    "format": "prettier --write src/",
+    "format-ci": "prettier --check src/"
+  },
+  "author": "Ben Coleman",
+  "license": "MIT",
+  "homepage": "https://github.com/benc-uk/k6-reporter",
+  "devDependencies": {
+    "clean-webpack-plugin": "^3.0.0",
+    "prettier": "^2.2.1",
+    "webpack": "^5.11.0",
+    "webpack-cli": "^4.3.0"
+  },
+  "dependencies": {
+    "ejs": "^3.1.6"
+  }
+}
