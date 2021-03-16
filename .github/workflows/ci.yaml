@@ -1,0 +1,32 @@
+name: CI Checks & Build
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: "CI Build"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: NPM Install
+        run: npm install --silent
+      - name: Lint Check
+        run: npm run lint
+      - name: Bundle
+        run: npm run build
+      - name: Add dist bundle
+        run: |
+          git config --local user.email "benc.uk@gmail.com"
+          git config --local user.name "GitHub Actions"
+          git add --force dist
+          git commit -m "CI automation $(date)"
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: main
+          force: true
