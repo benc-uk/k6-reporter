@@ -37,7 +37,8 @@ export function handleSummary(data) {
 }
 ```
 
-The key used in the returned object, is the filename that will be written to, and can be any valid filename or path
+The key used in the returned object, is the filename that will be written to, and can be any valid filename or path  
+**Note. This is a change in the v2.1.0 release**
 
 The **htmlReport** function accepts an optional options map as a second parameter, with the following properties
 
