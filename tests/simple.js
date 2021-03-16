@@ -5,8 +5,8 @@
 import { check, group, sleep } from "k6";
 import http from "k6/http";
 
-import { htmlReport } from "https://raw.githubusercontent.com/benc-uk/k6-reporter/2.0.0/dist/bundle.js";
-//import { htmlReport } from "/home/ben/dev/k6-reporter/dist/bundle.js";
+//import { htmlReport } from "https://raw.githubusercontent.com/benc-uk/k6-reporter/2.0.0/dist/bundle.js";
+import { htmlReport } from "../dist/bundle.js";
 import { textSummary } from "https://jslib.k6.io/k6-summary/0.0.1/index.js";
 
 const TARGET_URL = __ENV.TEST_TARGET || "https://benc.dev";
@@ -16,9 +16,8 @@ const USER_COUNT = __ENV.USER_COUNT || 20;
 const SLEEP = __ENV.SLEEP || 1;
 
 export function handleSummary(data) {
-  let html = htmlReport(data, { filename: `dummy` });
   return {
-    "summary.html": html["dummy"],
+    "example.html": htmlReport(data),
     stdout: textSummary(data, { indent: " ", enableColors: true }),
   };
 }
