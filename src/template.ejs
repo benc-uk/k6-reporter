@@ -120,7 +120,7 @@
         left: 50%;
         transform: translate(-50%, -50%);
         color: #0000002d;
-        font-size: 9vw;
+        font-size: 8vw;
         z-index: 1;
       }
       .metricbox {
@@ -144,9 +144,14 @@
     <div class="row">
       <div class="box">
         <i class="fas fa-globe icon"></i>
-        <h4>Requests</h4>
+        <h4>Total Requests</h4>
         <% if(data.metrics.http_reqs) { %><div class="bignum"><%= data.metrics.http_reqs.values.count %></div><% } %>
       </div>
+      <div class="box <% if(data.metrics.http_req_failed && data.metrics.http_req_failed.values.passes > 0) { %> failed <% } %>">
+        <i class="far fa-times-circle icon"></i>
+        <h4>Failed Requests</h4>
+        <% if(data.metrics.http_req_failed) { %><div class="bignum"><%= data.metrics.http_req_failed.values.passes %></div><% } %>
+      </div>      
       <div class="box <% if(thresholdFailures > 0) { %> failed <% } %>">
         <i class="fas fa-chart-bar icon"></i>
         <h4>Breached Thresholds</h4>
