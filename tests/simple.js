@@ -17,7 +17,7 @@ const SLEEP = __ENV.SLEEP || 1;
 
 export function handleSummary(data) {
   return {
-    "example.html": htmlReport(data),
+    "example1.html": htmlReport(data),
     stdout: textSummary(data, { indent: " ", enableColors: true }),
   };
 }
@@ -34,9 +34,9 @@ export let options = {
   },
 };
 
-// Totally generic HTTP check
 export default function () {
-  let res = http.get(TARGET_URL);
+  let url = Math.random() > 0.5 ? TARGET_URL : TARGET_URL + "/gibberish";
+  let res = http.get(url);
 
   check(res, {
     "Status is ok": (r) => r.status === 200,

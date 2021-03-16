@@ -7,7 +7,7 @@
 import ejs from "../node_modules/ejs/ejs.min.js"
 import template from "./template.ejs"
 
-const version = "2.1.1"
+const version = "2.2.0"
 
 //
 // Main function should be imported and wrapped with the function handleSummary
@@ -29,8 +29,8 @@ export function htmlReport(data, opts = {}) {
     if (data.metrics[metricName].thresholds) {
       thresholdCount++
       let thresholds = data.metrics[metricName].thresholds
-      for (let t in thresholds) {
-        if (!thresholds[t].ok) {
+      for (let thresName in thresholds) {
+        if (!thresholds[thresName].ok) {
           thresholdFailures++
         }
       }
