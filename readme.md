@@ -15,7 +15,7 @@ Any HTTP metrics which have failed thresholds will be highlighted in red. Any gr
 
 # Usage
 
-This extension to K6 is intended to be used by adding into your K6 test code (JavaScript) and utilizes the _handleSummary_ callback hook, added to K6 v0.30.0. When your test completes a HTML file will be written to teh filesystem, containing a formatted and easy to consume version of the test summary data
+This extension to K6 is intended to be used by adding into your K6 test code (JavaScript) and utilizes the _handleSummary_ callback hook, added to K6 v0.30.0. When your test completes a HTML file will be written to the filesystem, containing a formatted and easy to consume version of the test summary data
 
 To use, add this module to your test code.
 
@@ -25,7 +25,7 @@ Import the `htmlReport` function from the bundled module hosted remotely on GitH
 import { htmlReport } from "https://raw.githubusercontent.com/benc-uk/k6-reporter/main/dist/bundle.js";
 ```
 
-> Note. Replace `main` with a version tag (e.g. `2.1.1`) to use a specific version
+> Note. Replace `main` with a version tag (e.g. `2.2.0`) to use a specific version
 
 Then outside the test's default function, wrap it with the `handleSummary(data)` function which [K6 calls at the end of any test](https://github.com/loadimpact/k6/pull/1768), as follows:
 
@@ -37,7 +37,7 @@ export function handleSummary(data) {
 }
 ```
 
-The key used in the returned object, is the filename that will be written to, and can be any valid filename or path  
+The key used in the returned object is the filename that will be written to, and can be any valid filename or path  
 **Note. This is a change in the v2.1.1 release**
 
 The **htmlReport** function accepts an optional options map as a second parameter, with the following properties
@@ -65,6 +65,6 @@ export function handleSummary(data) {
 
 # Screenshots
 
-![main report screenshot](https://user-images.githubusercontent.com/14982936/111085852-2c5a8480-8511-11eb-89dc-e6c836e6fc3d.png)
+![main report screenshot](https://user-images.githubusercontent.com/14982936/111346520-32b64100-8676-11eb-9b35-df32ef1982b1.png)
 
 ![another report screenshot](https://user-images.githubusercontent.com/14982936/111085882-5d3ab980-8511-11eb-819d-d283bd03dc88.png)
