@@ -22,40 +22,43 @@ To use, add this module to your test code.
 Import the `htmlReport` function from the bundled module hosted remotely on GitHub
 
 ```js
-import { htmlReport } from "https://raw.githubusercontent.com/benc-uk/k6-reporter/main/dist/bundle.js"
+import { htmlReport } from "https://raw.githubusercontent.com/benc-uk/k6-reporter/main/dist/bundle.js";
 ```
+
+> Note. Replace `main` with a version tag (e.g. `2.1.0`) to use a specific version
 
 Then outside the test's default function, wrap it with the `handleSummary(data)` function which [K6 calls at the end of any test](https://github.com/loadimpact/k6/pull/1768), as follows:
 
 ```js
 export function handleSummary(data) {
-  return htmlReport(data)
+  return {
+    "summary.html": htmlReport(data),
+  };
 }
 ```
+
+The key used in the returned object, is the filename that will be written to, and can be any valid filename or path
 
 The **htmlReport** function accepts an optional options map as a second parameter, with the following properties
 
 ```ts
-filename string  // Filename of HTML output, can include the path
 title    string  // Title of the report, defaults to current date
 ```
 
 ## Multiple outputs
 
-If you want more control over the output produced or to output the summary into multiple places (including stdout), the following pattern can be used. Where the results of calling `htmlReport` are inspected and the key fetched which holds the raw HTML string data. Then you can return your own custom object from `handleSummary`
+If you want more control over the output produced or to output the summary into multiple places (including stdout), just combine the result of htmlReport with other summary generators, as follows:
 
 ```js
-// This will export to HTML as filename "my_summary.html" AND also stdout using the text summary
-import { htmlReport } from "https://raw.githubusercontent.com/benc-uk/k6-reporter/main/dist/bundle.js"
-import { textSummary } from "https://jslib.k6.io/k6-summary/0.0.1/index.js"
+// This will export to HTML as filename "result.html" AND also stdout using the text summary
+import { htmlReport } from "https://raw.githubusercontent.com/benc-uk/k6-reporter/main/dist/bundle.js";
+import { textSummary } from "https://jslib.k6.io/k6-summary/0.0.1/index.js";
 
 export function handleSummary(data) {
-  let summaryObj = htmlReport(data, { filename: `dummy` })
-
   return {
-    "my_summary.html": summaryObj["dummy"],
+    "result.html": htmlReport(data),
     stdout: textSummary(data, { indent: " ", enableColors: true }),
-  }
+  };
 }
 ```
 

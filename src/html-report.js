@@ -7,16 +7,13 @@
 import ejs from "../node_modules/ejs/ejs.min.js"
 import template from "./template.ejs"
 
-const version = "2.0.0"
+const version = "2.1.0"
 
 //
 // Main function should be imported and wrapped with the function handleSummary
 //
 export function htmlReport(data, opts = {}) {
   // Default options
-  if (!opts.filename) {
-    opts.filename = "summary.html"
-  }
   if (!opts.title) {
     opts.title = new Date().toISOString().slice(0, 16).replace("T", " ")
   }
@@ -96,11 +93,9 @@ export function htmlReport(data, opts = {}) {
     version,
   })
 
-  // Return a handleSummary result object
+  // Return HTML string needs wrapping in a handleSummary result object
   // See https://k6.io/docs/results-visualization/end-of-test-summary#handlesummary-callback
-  let result = {}
-  result[opts.filename] = html
-  return result
+  return html
 }
 
 //
