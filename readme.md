@@ -25,7 +25,7 @@ Import the `htmlReport` function from the bundled module hosted remotely on GitH
 import { htmlReport } from "https://raw.githubusercontent.com/benc-uk/k6-reporter/main/dist/bundle.js";
 ```
 
-> Note. Replace `main` with a version tag (e.g. `2.1.0`) to use a specific version
+> Note. Replace `main` with a version tag (e.g. `2.1.1`) to use a specific version
 
 Then outside the test's default function, wrap it with the `handleSummary(data)` function which [K6 calls at the end of any test](https://github.com/loadimpact/k6/pull/1768), as follows:
 
@@ -38,7 +38,7 @@ export function handleSummary(data) {
 ```
 
 The key used in the returned object, is the filename that will be written to, and can be any valid filename or path  
-**Note. This is a change in the v2.1.0 release**
+**Note. This is a change in the v2.1.1 release**
 
 The **htmlReport** function accepts an optional options map as a second parameter, with the following properties
 

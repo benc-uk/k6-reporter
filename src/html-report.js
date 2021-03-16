@@ -7,7 +7,7 @@
 import ejs from "../node_modules/ejs/ejs.min.js"
 import template from "./template.ejs"
 
-const version = "2.1.0"
+const version = "2.1.1"
 
 //
 // Main function should be imported and wrapped with the function handleSummary
@@ -18,7 +18,7 @@ export function htmlReport(data, opts = {}) {
     opts.title = new Date().toISOString().slice(0, 16).replace("T", " ")
   }
 
-  console.log(`[k6-reporter v${version}] Generating HTML summary report as: ${opts.filename}`)
+  console.log(`[k6-reporter v${version}] Generating HTML summary report`)
   let metricListSorted = []
 
   // Count the thresholds and those that have failed
