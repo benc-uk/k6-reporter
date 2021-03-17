@@ -145,13 +145,16 @@
       <div class="box">
         <i class="fas fa-globe icon"></i>
         <h4>Total Requests</h4>
-        <% if(data.metrics.http_reqs) { %><div class="bignum"><%= data.metrics.http_reqs.values.count %></div><% } %>
+        <div class="bignum"><% if(data.metrics.http_reqs) { %><%= data.metrics.http_reqs.values.count %><% } %></div>
+        <div class="bignum"><% if(data.metrics.grpc_reqs) { %><%= data.metrics.grpc_reqs.values.count %><% } %></div>
       </div>
-      <div class="box <% if(data.metrics.http_req_failed && data.metrics.http_req_failed.values.passes > 0) { %> failed <% } %>">
-        <i class="far fa-times-circle icon"></i>
-        <h4>Failed Requests</h4>
-        <% if(data.metrics.http_req_failed) { %><div class="bignum"><%= data.metrics.http_req_failed.values.passes %></div><% } %>
-      </div>      
+      <% if(data.metrics.http_req_failed && data.metrics.http_req_failed.values) { %>
+        <div class="box <% if(data.metrics.http_req_failed.values.passes > 0) { %> failed <% } %>">
+          <i class="far fa-times-circle icon"></i>
+          <h4>Failed Requests</h4>
+          <div class="bignum"><%= data.metrics.http_req_failed.values.passes %></div>
+        </div> 
+      <% } %>     
       <div class="box <% if(thresholdFailures > 0) { %> failed <% } %>">
         <i class="fas fa-chart-bar icon"></i>
         <h4>Breached Thresholds</h4>
