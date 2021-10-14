@@ -7,7 +7,7 @@
 import ejs from '../node_modules/ejs/ejs.min.js'
 import template from './template.ejs'
 
-const version = '2.2.1'
+const version = '2.3.0'
 
 //
 // Main function should be imported and wrapped with the function handleSummary

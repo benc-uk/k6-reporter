@@ -245,34 +245,75 @@
         </table>
         <br>
 
-        
         <% 
           first = true 
-          for(metricName in data.metrics) {
+          var sortedMetrics = {}
+          Object.keys(data.metrics).sort().forEach(function(k) {
+            sortedMetrics[k] = data.metrics[k]
+          });
+          for(metricName in sortedMetrics) {
             if(standardMetrics.includes(metricName) || otherMetrics.includes(metricName)) { continue }
-            var metric = data.metrics[metricName] 
+            var metric = sortedMetrics[metricName] 
         %>
-          <% if(first) { first = false %> <h2>Custom Metrics</h2> <% } %>
+          <% if(first) { first = false %> <h2>Custom Metrics</h2> 
           <table class="pure-table pure-table-striped">
             <tbody>
-              <thead>     
+              <thead>
                 <tr>
                   <th></th>
-                  <% for(valueName in metric.values) { %>
-                    <th><%= valueName %></th>
-                  <% } %>
+                  <th>Average</th>
+                  <th>Maximum</th>
+                  <th>Median</th> 
+                  <th>Minimum</th>
+                  <th>90th Percentile</th>
+                  <th>95th Percentile</th>
                 </tr>
               </thead>
+              <% } %>
               <tr>
                 <td><b><%= metricName %></b></td>
-                <% for(valueName in metric.values) { %>
-                  <td><%= metric.values[valueName].toFixed(2) %></td>
+                
+                <% if(metric.values.avg) { %>
+                  <td class="<%= checkFailed(metric, 'avg') %>"><%= metric.values.avg.toFixed(2) %></td>
+                <% } else { %>
+                  <td>-</td>
+                <% } %>
+
+                <% if(metric.values.max) { %>
+                  <td class="<%= checkFailed(metric, 'max') %>"><%= metric.values.max.toFixed(2) %></td>
+                <% } else { %>
+                  <td>-</td>
+                <% } %>  
+
+                <% if(metric.values.med) { %>
+                  <td class="<%= checkFailed(metric, 'med') %>"><%= metric.values.med.toFixed(2) %></td>
+                <% } else { %>
+                  <td>-</td>
+                <% } %>  
+                
+                <% if(metric.values.min) { %>
+                  <td class="<%= checkFailed(metric, 'min') %>"><%= metric.values.min.toFixed(2) %></td>
+                <% } else { %>
+                  <td>-</td>
+                <% } %>   
+                              
+                <% if(metric.values['p(90)']) { %>
+                  <td class="<%= checkFailed(metric, 'p(90)') %>"><%= metric.values['p(90)'].toFixed(2) %></td>
+                <% } else { %>
+                  <td>-</td>
+                <% } %>
+
+                <% if(metric.values['p(95)']) { %>
+                  <td class="<%= checkFailed(metric, 'p(95)') %>"><%= metric.values['p(95)'].toFixed(2) %></td>
+                <% } else { %>
+                  <td>-</td> 
                 <% } %>
               </tr>
+              <% } %>
             </tbody>
           </table>
           <br>
-        <% } %>
+
 
         &nbsp;&nbsp; Note. All times are in milli-seconds
       </div> 
@@ -336,7 +377,7 @@
       <div class="tab">
 
         <% for(group of data.root_group.groups) { %>
-          <h2>&bull; <%= group.name %></h2>
+          <h2>&bull; Group - <%= group.name %></h2>
           <table class="pure-table pure-table-horizontal" style="width: 100%">
             <thead>
               <tr>
