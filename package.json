@@ -1,6 +1,6 @@
 {
   "name": "k6-reporter",
-  "version": "1.0.0",
+  "version": "2.3.0",
   "description": "Export K6 test summary as a HTML report",
   "repository": {
     "type": "git",

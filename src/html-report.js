@@ -4,10 +4,10 @@
 //
 
 // Have to import ejs this way, nothing else works
-import ejs from "../node_modules/ejs/ejs.min.js"
-import template from "./template.ejs"
+import ejs from '../node_modules/ejs/ejs.min.js'
+import template from './template.ejs'
 
-const version = "2.2.0"
+const version = '2.3.0'
 
 //
 // Main function should be imported and wrapped with the function handleSummary
@@ -15,11 +15,19 @@ const version = "2.2.0"
 export function htmlReport(data, opts = {}) {
   // Default options
   if (!opts.title) {
-    opts.title = new Date().toISOString().slice(0, 16).replace("T", " ")
+    opts.title = new Date().toISOString().slice(0, 16).replace('T', ' ')
+  }
+  // eslint-disable-next-line
+  if (!opts.hasOwnProperty('debug')) {
+    opts.debug = false
   }
 
   console.log(`[k6-reporter v${version}] Generating HTML summary report`)
   let metricListSorted = []
+
+  if (opts.debug) {
+    console.log(JSON.stringify(data, null, 2))
+  }
 
   // Count the thresholds and those that have failed
   let thresholdFailures = 0
@@ -56,28 +64,28 @@ export function htmlReport(data, opts = {}) {
   }
 
   const standardMetrics = [
-    "grpc_req_duration",
-    "http_req_duration",
-    "http_req_waiting",
-    "http_req_connecting",
-    "http_req_tls_handshaking",
-    "http_req_sending",
-    "http_req_receiving",
-    "http_req_blocked",
-    "iteration_duration",
-    "group_duration",
+    'grpc_req_duration',
+    'http_req_duration',
+    'http_req_waiting',
+    'http_req_connecting',
+    'http_req_tls_handshaking',
+    'http_req_sending',
+    'http_req_receiving',
+    'http_req_blocked',
+    'iteration_duration',
+    'group_duration',
   ]
 
   const otherMetrics = [
-    "iterations",
-    "data_sent",
-    "checks",
-    "http_reqs",
-    "data_received",
-    "vus_max",
-    "vus",
-    "http_req_failed",
-    "http_req_duration{expected_response:true}",
+    'iterations',
+    'data_sent',
+    'checks',
+    'http_reqs',
+    'data_received',
+    'vus_max',
+    'vus',
+    'http_req_failed',
+    'http_req_duration{expected_response:true}',
   ]
 
   // Render the template
