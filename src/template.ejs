@@ -342,8 +342,8 @@
           <div class="box metricbox">
             <h4>Virtual Users</h4>
             <i class="fas fa-user icon"></i>
-            <div class="row"><div>Min</div><div><%= data.metrics.vus.values.min %></div></div>
-            <div class="row"><div>Max</div><div><%= data.metrics.vus.values.max %></div></div>
+            <div class="row"><div>Min</div><div><%= data.metrics.vus ? data.metrics.vus.values.min : 1 %></div></div>
+            <div class="row"><div>Max</div><div><%= data.metrics.vus ? data.metrics.vus.values.max : 1 %></div></div>
           </div>
         </div>
 
