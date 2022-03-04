@@ -74,6 +74,10 @@ export function htmlReport(data, opts = {}) {
     'http_req_blocked',
     'iteration_duration',
     'group_duration',
+    'ws_connecting',
+    'ws_msgs_received',
+    'ws_msgs_sent',
+    'ws_sessions'
   ]
 
   const otherMetrics = [
