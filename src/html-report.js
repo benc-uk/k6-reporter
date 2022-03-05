@@ -77,7 +77,7 @@ export function htmlReport(data, opts = {}) {
     'ws_connecting',
     'ws_msgs_received',
     'ws_msgs_sent',
-    'ws_sessions'
+    'ws_sessions',
   ]
 
   const otherMetrics = [
