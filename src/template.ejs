@@ -178,6 +178,8 @@
             <thead>
               <tr>
                 <th></th>
+                <th>Count</th>
+                <th>Rate</th>
                 <th>Average</th>
                 <th>Maximum</th>
                 <th>Median</th> 
@@ -203,6 +205,18 @@
             %>
               <tr>
                 <td><b><%= metricName %></b></td>
+
+                <% if(metric.values.count) { %>
+                  <td class="<%= checkFailed(metric, 'count') %>"><%= metric.values.count.toFixed(2) %></td>
+                <% } else { %>
+                  <td>-</td>
+                <% } %>
+
+                <% if(metric.values.rate) { %>
+                  <td class="<%= checkFailed(metric, 'rate') %>"><%= metric.values.rate.toFixed(2) %></td>
+                <% } else { %>
+                  <td>-</td>
+                <% } %>
                 
                 <% if(metric.values.avg) { %>
                   <td class="<%= checkFailed(metric, 'avg') %>"><%= metric.values.avg.toFixed(2) %></td>
@@ -261,6 +275,8 @@
               <thead>
                 <tr>
                   <th></th>
+                  <th>Count</th>
+                  <th>Rate</th>
                   <th>Average</th>
                   <th>Maximum</th>
                   <th>Median</th> 
@@ -272,6 +288,18 @@
               <% } %>
               <tr>
                 <td><b><%= metricName %></b></td>
+
+                <% if(metric.values.count) { %>
+                  <td class="<%= checkFailed(metric, 'count') %>"><%= metric.values.count.toFixed(2) %></td>
+                <% } else { %>
+                  <td>-</td>
+                <% } %>
+
+                <% if(metric.values.rate) { %>
+                  <td class="<%= checkFailed(metric, 'rate') %>"><%= metric.values.rate.toFixed(2) %></td>
+                <% } else { %>
+                  <td>-</td>
+                <% } %>
                 
                 <% if(metric.values.avg) { %>
                   <td class="<%= checkFailed(metric, 'avg') %>"><%= metric.values.avg.toFixed(2) %></td>
@@ -332,12 +360,14 @@
             </div>
           <% } %>
 
-          <div class="box metricbox">
-            <h4>Iterations</h4>
-            <i class="fas fa-redo icon"></i>
-            <div class="row"><div>Total</div><div><%= data.metrics.iterations.values.count %></div></div>
-            <div class="row"><div>Rate</div><div><%= data.metrics.iterations.values.rate.toFixed(2) %>/s</div></div>
-          </div>
+          <% if (data.metrics.iterations) { %>
+            <div class="box metricbox">
+              <h4>Iterations</h4>
+              <i class="fas fa-redo icon"></i>
+              <div class="row"><div>Total</div><div><%= data.metrics.iterations.values.count %></div></div>
+              <div class="row"><div>Rate</div><div><%= data.metrics.iterations.values.rate.toFixed(2) %>/s</div></div>
+            </div>
+          <% } %>
 
           <div class="box metricbox">
             <h4>Virtual Users</h4>
