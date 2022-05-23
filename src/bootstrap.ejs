@@ -42,7 +42,7 @@
       </div>
     </div>
     <div class="row">
-      <div class="col-md-4 mb-3">
+      <div class="col mb-3">
         <div class="card p-3" style="height: 239px;">
           <div class="card-body text-center">
             <div class="icon bg-info mx-auto mb-3"><i class="bx bx-globe"></i></div>
@@ -52,7 +52,18 @@
           </div>
         </div>
       </div>
-      <div class="col-md-4 mb-3">
+      <% if(data.metrics.http_req_failed && data.metrics.http_req_failed.values) { %>
+        <div class="col mb-3">
+          <div class="card p-3 <% if(data.metrics.http_req_failed.values.passes > 0) { %> bg-danger text-white <% } %>" style="height: 239px;">
+            <div class="card-body text-center">
+              <div class="icon bg-white mx-auto mb-3"><i class="text-danger bx bx-window-close"></i></div>
+              <h5 class="card-title">Failed Requests</h5>
+              <h1><%= data.metrics.http_req_failed.values.passes %></h1>
+            </div>
+          </div>
+        </div>
+      <% } %>
+      <div class="col mb-3">
         <div class="card p-3" style="height: 239px;">
           <div class="card-body text-center">
             <div class="icon bg-warning mx-auto mb-3"><i class='bx bx-circle-three-quarter'></i></div>
@@ -61,7 +72,7 @@
           </div>
         </div>
       </div>
-      <div class="col-md-4 mb-3">
+      <div class="col mb-3">
         <div class="card p-3 <% if(checkFailures > 0) { %> bg-danger text-white <% } %>" style="height: 239px;">
           <div class="card-body text-center">
             <div class="icon mx-auto mb-3 <% if(checkFailures == 0) { %> bg-success <% } %>"><i class='bx <%= (checkFailures > 0) ? "bx-error-circle text-danger" : "bx-check-circle text-white" %>'></i></div>
