@@ -124,9 +124,9 @@
                           <% if(metric.values.count) { %> <td class="<%= checkFailed(metric, 'count') %>"><%= metric.values.count.toFixed(2) %></td> <% } else { %> <td>-</td> <% } %>
                           <% if(metric.values.rate) { %> <td class="<%= checkFailed(metric, 'rate') %>"><%= metric.values.rate.toFixed(2) %></td> <% } else { %> <td>-</td> <% } %>
                           <% if(metric.values.avg) { %> <td class="<%= checkFailed(metric, 'avg') %>"><%= metric.values.avg.toFixed(2) %></td> <% } else { %> <td>-</td> <% } %>
-                          <% if(metric.values.max) { %> <td class="<%= checkFailed(metric, 'max') %>"><%= metric.values.max.toFixed(2) %></td> <% } else { %> <td>-</td> <% } %>
-                          <% if(metric.values.med) { %> <td class="<%= checkFailed(metric, 'med') %>"><%= metric.values.med.toFixed(2) %></td> <% } else { %> <td>-</td> <% } %>
                           <% if(metric.values.min) { %> <td class="<%= checkFailed(metric, 'min') %>"><%= metric.values.min.toFixed(2) %></td> <% } else { %> <td>-</td> <% } %>
+                          <% if(metric.values.med) { %> <td class="<%= checkFailed(metric, 'med') %>"><%= metric.values.med.toFixed(2) %></td> <% } else { %> <td>-</td> <% } %>
+                          <% if(metric.values.max) { %> <td class="<%= checkFailed(metric, 'max') %>"><%= metric.values.max.toFixed(2) %></td> <% } else { %> <td>-</td> <% } %>
                           <% if(metric.values['p(90)']) { %> <td class="<%= checkFailed(metric, 'p(90)') %>"><%= metric.values['p(90)'].toFixed(2) %></td> <% } else { %> <td>-</td> <% } %>
                           <% if(metric.values['p(95)']) { %> <td class="<%= checkFailed(metric, 'p(95)') %>"><%= metric.values['p(95)'].toFixed(2) %></td> <% } else { %> <td>-</td> <% } %>
                         </tr>
@@ -156,9 +156,9 @@
                       <th>Count</th>
                       <th>Rate</th>
                       <th>Average</th>
-                      <th>Maximum</th>
-                      <th>Median</th>
                       <th>Minimum</th>
+                      <th>Median</th>
+                      <th>Maximum</th>
                       <th>90th Percentile</th>
                       <th>95th Percentile</th>
                     </thead>
@@ -169,9 +169,9 @@
                         <% if(metric.values.count) { %> <td class="<%= checkFailed(metric, 'count') %>"><%= metric.values.count.toFixed(2) %></td> <% } else { %> <td>-</td> <% } %>
                         <% if(metric.values.rate) { %> <td class="<%= checkFailed(metric, 'rate') %>"><%= metric.values.rate.toFixed(2) %></td> <% } else { %> <td>-</td> <% } %>
                         <% if(metric.values.avg) { %> <td class="<%= checkFailed(metric, 'avg') %>"><%= metric.values.avg.toFixed(2) %></td> <% } else { %> <td>-</td> <% } %>
-                        <% if(metric.values.max) { %> <td class="<%= checkFailed(metric, 'max') %>"><%= metric.values.max.toFixed(2) %></td> <% } else { %> <td>-</td> <% } %>
-                        <% if(metric.values.med) { %> <td class="<%= checkFailed(metric, 'med') %>"><%= metric.values.med.toFixed(2) %></td> <% } else { %> <td>-</td> <% } %>
                         <% if(metric.values.min) { %> <td class="<%= checkFailed(metric, 'min') %>"><%= metric.values.min.toFixed(2) %></td> <% } else { %> <td>-</td> <% } %>
+                        <% if(metric.values.med) { %> <td class="<%= checkFailed(metric, 'med') %>"><%= metric.values.med.toFixed(2) %></td> <% } else { %> <td>-</td> <% } %>
+                        <% if(metric.values.max) { %> <td class="<%= checkFailed(metric, 'max') %>"><%= metric.values.max.toFixed(2) %></td> <% } else { %> <td>-</td> <% } %>
                         <% if(metric.values['p(90)']) { %> <td class="<%= checkFailed(metric, 'p(90)') %>"><%= metric.values['p(90)'].toFixed(2) %></td> <% } else { %> <td>-</td> <% } %>
                         <% if(metric.values['p(95)']) { %> <td class="<%= checkFailed(metric, 'p(95)') %>"><%= metric.values['p(95)'].toFixed(2) %></td> <% } else { %> <td>-</td> <% } %>
                       </tr>
