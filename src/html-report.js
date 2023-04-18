@@ -46,22 +46,22 @@ export function htmlReport(data, opts = {}) {
   }
 
   // Count the checks and those that have passed or failed
-  // NOTE. Nested groups are not checked!
   let checkFailures = 0
   let checkPasses = 0
-  if (data.root_group.checks) {
-    let { passes, fails } = countChecks(data.root_group.checks)
-    checkFailures += fails
-    checkPasses += passes
-  }
 
-  for (let group of data.root_group.groups) {
+  function countChecksInGroup(group) {
     if (group.checks) {
       let { passes, fails } = countChecks(group.checks)
       checkFailures += fails
       checkPasses += passes
     }
+    // Count the checks in nested groups
+    for (let subGroup of group.groups) {
+      countChecksInGroup(subGroup)
+    }
   }
+
+  countChecksInGroup(data.root_group);
 
   const standardMetrics = [
     'grpc_req_duration',

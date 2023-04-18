@@ -132,7 +132,23 @@
         position: relative;
         z-index: 20;
       }
+      .sub-groups {
+        padding: 1rem;
+      }
+      .group-header {
+        cursor: pointer;
+      }
     </style>
+    <script>
+      function groupHeaderClickHandler(e) {
+        let elemSubGroup = e.target.nextElementSibling;
+        if (!elemSubGroup) {
+          return;
+        }
+        let display = elemSubGroup.style.display;
+        elemSubGroup.style.display = !display || display === "block" ? "none" : "block";
+      }
+    </script>
   </head>
 
   <body>
@@ -405,24 +421,38 @@
       <input type="radio" name="tabs" id="tabthree">
       <label for="tabthree"><i class="fas fa-tasks"></i> Checks & Groups</label>
       <div class="tab">
+        <% function renderGroup(group) { %>
+          <h2 class="group-header" onclick="groupHeaderClickHandler(event)">&bull; Group - <%= group.name %></h2>
+          <div>
+            <% if(group.checks.length > 0) { %>
+              <table class="pure-table pure-table-horizontal" style="width: 100%">
+                <thead>
+                  <tr>
+                    <th>Check Name</th>
+                    <th>Passes</th>
+                    <th>Failures</th>
+                  </tr>
+                </thead>
+                <% for(check of group.checks) { %>
+                  <tr class="checkDetails <% if(check.fails > 0) { %>failed<% } %>">
+                    <td width="50%"><%= check.name %></td><td><%= check.passes %></td><td><%= check.fails %></td>
+                  </tr>
+                <% } %>
+              </table>
+            <% } %>
+            <% if(group.groups.length > 0) { %>
+              <div class="sub-groups">
+                <% for(subGroup of group.groups) { %>
+                  <%- renderGroup(subGroup) %>
+                <% } %>
+              </div>
+            <% } %>
+          </div>
+          <br>
+        <% } %>
 
         <% for(group of data.root_group.groups) { %>
-          <h2>&bull; Group - <%= group.name %></h2>
-          <table class="pure-table pure-table-horizontal" style="width: 100%">
-            <thead>
-              <tr>
-                <th>Check Name</th>
-                <th>Passes</th>
-                <th>Failures</th>
-              </tr>
-            </thead>
-            <% for(check of group.checks) { %>
-              <tr class="checkDetails <% if(check.fails > 0) { %>failed<% } %>">
-                <td width="50%"><%= check.name %></td><td><%= check.passes %></td><td><%= check.fails %></td>
-              </tr>
-            <% } %>
-          </table>
-          <br>
+          <%- renderGroup(group) %>
         <% } %>
 
         <h2>&bull; Other Checks</h2>
