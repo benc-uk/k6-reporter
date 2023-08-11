@@ -442,6 +442,55 @@
         </table>     
       </div> 
       <!-- ---- end tab ---- -->
+
+      <input type="radio" name="tabs" id="tabfour">
+      <label for="tabfour"><i class="fas fa-exclamation-circle"></i> &nbsp; Failed Check List</label>
+      <div class="tab">
+        <% function renderFailedCheck(check) { %>
+          <thead>
+            <tr>
+              <th>
+                Failed Check Name
+              </th>
+            </tr>
+          </thead>
+          <tr class="checkDetails failed">
+            <td><%= check.name %></td>
+          </tr>
+          <% if (check.checks) {
+            for (const subCheck of check.checks) {
+              renderFailedCheck(subCheck);
+            }
+          } %>
+        <% } %>
+        <% function renderGroup(group) { %>
+          <% let hasFailedChecks = false;
+          for (const check of group.checks) {
+            if (check.fails > 0) {
+              hasFailedChecks = true;
+              break;
+            }
+          }
+          if (hasFailedChecks) { %>
+            <h2>&bull; Group - <%= group.name %></h2>
+            <table class="pure-table pure-table-horizontal" style="width: 100%">
+              <% for (const check of group.checks) {
+                if (check.fails > 0) {
+                  renderFailedCheck(check);
+                }
+              } %>
+            </table>
+          <% } %>
+          <% for (const subGroup of group.groups) {
+            renderGroup(subGroup);
+          } %>
+        <% } %>
+        <% for (const group of data.root_group.groups) {
+          renderGroup(group);
+        } %>
+      </div>
+      <!-- ---- end tab ---- -->
+      
     </div>
     <footer>K6 Reporter v<%= version %> - Ben Coleman 2021, <a href="https://github.com/benc-uk/k6-reporter">[GitHub]</a></footer>
   </body>
