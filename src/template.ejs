@@ -256,7 +256,7 @@
                 <% } %>
 
                 <% if(metric.values['p(99)']) { %>
-                  <td class="<%= checkFailed(metric, 'p(99)') %>"><%= metric.values['p(99)'].toFixed(2) %></td>
+                  <td class="<%= checkFailed(metric, 'p(99)') %>"><%= metric.values['p(99)'].toFixed(5) %></td>
                 <% } else { %>
                   <td>-</td> 
                 <% } %>
