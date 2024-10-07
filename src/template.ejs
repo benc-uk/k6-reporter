@@ -460,22 +460,30 @@
       <input type="radio" name="tabs" id="tabfour">
       <label for="tabfour"><i class="fas fa-tasks"></i> Threshold Limits</label>
       <div class="tab">
-        <h2>&bull; Thresholds</h2>
+        <h1>&bull; Thresholds</h1>
 
       <%
+        function splitThresholds(threshold) {
+          thresholdlist = JSON.stringify(threshold)
+          thresholdlist = thresholdlist.replace("[", "")
+          thresholdlist = thresholdlist.replace("]", "")
+          thresholdlist = thresholdlist.replaceAll('"', "")
+          return thresholdlist.split(",")
+        }
+
         for(metricName of standardMetrics) { 
           if(!data.metrics[metricName]) { continue }
           var metric = data.metrics[metricName] 
       %>
       <!-- need to add what this threshold applies to and clean up  -->
-      <% if(metric.thresholds) { %>
-        <div class="row">
+      <% if(metric.thresholds) { thresholdArray = splitThresholds(Object.keys(metric.thresholds)) %>
+        <h2>&bull; <%= metricName %></h2>
+        <% for(thresh of thresholdArray) {%>
           <div class="box metricbox">
-            <h4> <%= Object.keys(metric.thresholds) %> </h4>
+            <h4> <%= thresh%> </h4>
             <!-- <h4> test </h4> -->
           </div>
-        </div>
-        <% } }%>
+        <% }} }%>
       </div>
 
       <!-- ---- end tab ---- -->

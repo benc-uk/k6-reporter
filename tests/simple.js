@@ -28,7 +28,21 @@ export let options = {
     { duration: RUN_TIME, target: USER_COUNT },
   ],
   thresholds: {
-    http_req_duration: ['p(95)<1000'],
+    http_req_duration: [      {
+      "threshold": "p(90)<500",
+      "abortOnFail": false,
+      "delayAbortEval": "0s"
+  },
+  {
+      "threshold": "p(95)<500",
+      "abortOnFail": false,
+      "delayAbortEval": "0s"
+  },
+  {
+      "threshold": "p(99.9)<500",
+      "abortOnFail": false,
+      "delayAbortEval": "0s"
+  }],
     iteration_duration: ['max<4000'],
   },
 }
