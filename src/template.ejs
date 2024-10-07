@@ -461,15 +461,23 @@
       <label for="tabfour"><i class="fas fa-tasks"></i> Threshold Limits</label>
       <div class="tab">
         <h2>&bull; Thresholds</h2>
-        <!-- <% for(thres in data.metrics.http_req_failed.thresholds) {%> -->
+
+      <%
+        for(metricName of standardMetrics) { 
+          if(!data.metrics[metricName]) { continue }
+          var metric = data.metrics[metricName] 
+      %>
+      
+      <% if(metric.thresholds) { %>
         <div class="row">
-          <div class="box">
-            <!-- <h4><% test %></h4> -->
-            <h4> test </h4>
+          <div class="box metricbox">
+            <h4> <%= Object.keys(metric.thresholds) %> </h4>
+            <!-- <h4> test </h4> -->
           </div>
         </div>
-        <!-- <% } %> -->
+        <% } }%>
       </div>
+
       <!-- ---- end tab ---- -->
 
     </div>
