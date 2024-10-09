@@ -52,7 +52,7 @@ If you want more control over the output produced or to output the summary into 
 
 ```js
 // This will export to HTML as filename "result.html" AND also stdout using the text summary
-import { htmlReport } from "https://raw.githubusercontent.com/bDaniel-benages-at-wiris/k6-reporter/main/dist/bundle.js";
+import { htmlReport } from "https://raw.githubusercontent.com/Daniel-benages-at-wiris/k6-reporter/main/dist/bundle.js";
 import { textSummary } from "https://jslib.k6.io/k6-summary/0.0.1/index.js";
 
 export function handleSummary(data) {
