@@ -7,7 +7,7 @@
 
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css" crossorigin="anonymous">
 
-  <link rel="shortcut icon" href="https://raw.githubusercontent.com/benc-uk/k6-reporter/main/assets/icon.png" type="image/png">
+  <link rel="shortcut icon" href="https://raw.githubusercontent.com/Daniel-benages-at-wiris/k6-reporter/main/assets/icon.png" type="image/png">
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>K6 Load Test: <%= title %></title>
@@ -168,54 +168,80 @@
 
   <div class="row">
     <div class="box">
+      <h4>Requests</h4>
       <i class="fas fa-globe icon"></i>
-      <h4>Total Requests</h4>
-      <div class="bignum"><% if(data.metrics.http_reqs) { %><%= data.metrics.http_reqs.values.count %><% } %></div>
-      <div class="bignum"><% if(data.metrics.grpc_reqs) { %><%= data.metrics.grpc_reqs.values.count %><% } %></div>
+      <div class="row">
+        <div>Total</div>
+        <div><% if(data.metrics.http_reqs) { %><%= data.metrics.http_reqs.values.count %><% } %></div>
+      </div>
+      <div class="row">
+        <div>Rate</div>
+        <div><% if(data.metrics.http_reqs) { %><%= data.metrics.http_reqs.values.rate.toFixed(2) %>/s<% } %></div>
+      </div>
     </div>
     <% if(data.metrics.http_req_failed && data.metrics.http_req_failed.values) { %>
-    <div class="box <% if(data.metrics.http_req_failed.values.passes > 0) { %> failed <% } %>">
+    <div class="box <% var fails; if(data.metrics.http_req_failed.values.passes > 0) { fails = true %> failed <% } %>">
       <i class="far fa-times-circle icon"></i>
       <h4>Failed Requests</h4>
-      <div class="bignum"><%= data.metrics.http_req_failed.values.passes %></div>
+      <% if(fails) {  %>
+      <div class="row">
+        <div>Total</div>
+        <div><%= data.metrics.http_req_failed.values.passes %></div>
+      </div>
+      <div class="row">
+        <div>Rate</div>
+        <% failedRate = (data.metrics.http_req_failed.values.passes / (data.metrics.http_req_failed.values.passes + data.metrics.http_req_failed.values.fails))*100 %>
+        <div><%= failedRate.toFixed(2) + '%' %></div>
+      </div>
+      <%} else {%>
+        <div class="bignum"><%= data.metrics.http_req_failed.values.passes %></div>
+      <%}%>
     </div>
     <% } %>
-    <div class="box <% if(thresholdFailures > 0) { %> failed <% } %>">
-      <i class="fas fa-chart-bar icon"></i>
-      <h4>Breached Thresholds</h4>
-      <div class="bignum"><%= thresholdFailures %></div>
+      <div class="box <% if(thresholdFailures > 0) { %> failed <% } %>">
+        <i class="fas fa-chart-bar icon"></i>
+        <h4>Breached Thresholds</h4>
+        <div class="bignum"><%= thresholdFailures %></div>
+      </div>
+      <div class="box <% if(checkFailures > 0) { %> failed <% } %>">
+        <h4>Checks</h4>
+        <i class="fas fa-eye icon"></i>
+        <div class="row">
+          <div>Passed</div>
+          <div><%= checkPasses %></div>
+        </div>
+        <div class="row">
+          <div>Failed</div>
+          <div><%= checkFailures %></div>
+        </div>
+      </div>
     </div>
-    <div class="box <% if(checkFailures > 0) { %> failed <% } %>">
-      <i class="fas fa-eye icon"></i>
-      <h4>Failed Checks</h4>
-      <div class="bignum"><%= checkFailures %></div>
-    </div>
-  </div>
 
-  <br>
+    <br>
 
-  <div class="tabs">
-    <input type="radio" name="tabs" id="tabone" checked="checked">
-    <label for="tabone"><i class="far fa-clock"></i> &nbsp; Request Metrics</label>
-    <div class="tab">
-      <table class="pure-table pure-table-striped">
-        <tbody>
-          <thead>
-            <tr>
-              <th></th>
-              <th>Count</th>
-              <th>Rate</th>
-              <th>Average</th>
-              <th>Maximum</th>
-              <th>Median</th>
-              <th>Minimum</th>
-              <th>90th Percentile</th>
-              <th>95th Percentile</th>
-              <th>99th Percentile</th>
-            </tr>
-          </thead>
+    <div class="tabs">
+      <input type="radio" name="tabs" id="tabone" checked="checked">
+      <label for="tabone"><i class="far fa-clock"></i> &nbsp; Request Metrics</label>
+      <div class="tab">
+        <h2> Request Metrics</h2>
+        <table class="pure-table pure-table-striped">
+          <tbody>
+            <thead>
+              <tr>
+                <th></th>
+                <th>Count</th>
+                <th>Rate</th>
+                <th>Average</th>
+                <th>Maximum</th>
+                <th>Median</th>
+                <th>Minimum</th>
+                <th>90th Percentile</th>
+                <th>95th Percentile</th>
+                <th>99th Percentile</th>
+              </tr>
+            </thead>
 
-          <% function checkFailed(metric, valName) {
+            <% function checkFailed(metric, valName) {
                 if(!metric.thresholds) return ''
                 for(thres in metric.thresholds) {
                   if(thres.includes(valName)) {
@@ -229,305 +255,265 @@
                 if(!data.metrics[metricName]) { continue }
                 var metric = data.metrics[metricName] 
             %>
-          <tr>
-            <td><b><%= metricName %></b></td>
+            <tr>
+              <td><b><%= metricName %></b></td>
 
-            <% if(metric.values.count) { %>
-            <td class="<%= checkFailed(metric, 'count') %>"><%= metric.values.count.toFixed(2) %></td>
-            <% } else { %>
-            <td>-</td>
+              <% if(metric.values.count) { %>
+              <td class="<%= checkFailed(metric, 'count') %>"><%= metric.values.count.toFixed(2) %></td>
+              <% } else { %>
+              <td>-</td>
+              <% } %>
+
+              <% if(metric.values.rate) { %>
+              <td class="<%= checkFailed(metric, 'rate') %>"><%= metric.values.rate.toFixed(2) %></td>
+              <% } else { %>
+              <td>-</td>
+              <% } %>
+
+              <% if(metric.values.avg) { %>
+              <td class="<%= checkFailed(metric, 'avg') %>"><%= metric.values.avg.toFixed(2) %></td>
+              <% } else { %>
+              <td>-</td>
+              <% } %>
+
+              <% if(metric.values.max) { %>
+              <td class="<%= checkFailed(metric, 'max') %>"><%= metric.values.max.toFixed(2) %></td>
+              <% } else { %>
+              <td>-</td>
+              <% } %>
+
+              <% if(metric.values.med) { %>
+              <td class="<%= checkFailed(metric, 'med') %>"><%= metric.values.med.toFixed(2) %></td>
+              <% } else { %>
+              <td>-</td>
+              <% } %>
+
+              <% if(metric.values.min) { %>
+              <td class="<%= checkFailed(metric, 'min') %>"><%= metric.values.min.toFixed(2) %></td>
+              <% } else { %>
+              <td>-</td>
+              <% } %>
+
+              <% if(metric.values['p(90)']) { %>
+              <td class="<%= checkFailed(metric, 'p(90)') %>"><%= metric.values['p(90)'].toFixed(2) %></td>
+              <% } else { %>
+              <td>-</td>
+              <% } %>
+
+              <% if(metric.values['p(95)']) { %>
+              <td class="<%= checkFailed(metric, 'p(95)') %>"><%= metric.values['p(95)'].toFixed(2) %></td>
+              <% } else { %>
+              <td>-</td>
+              <% } %>
+
+              <% if(metric.values['p(99)']) { %>
+              <td class="<%= checkFailed(metric, 'p(99)') %>"><%= metric.values['p(99)'].toFixed(5) %></td>
+              <% } else { %>
+              <td>-</td>
+              <% } %>
+            </tr>
             <% } %>
+          </tbody>
+        </table>
+        <br>
 
-            <% if(metric.values.rate) { %>
-            <td class="<%= checkFailed(metric, 'rate') %>"><%= metric.values.rate.toFixed(2) %></td>
-            <% } else { %>
-            <td>-</td>
-            <% } %>
-
-            <% if(metric.values.avg) { %>
-            <td class="<%= checkFailed(metric, 'avg') %>"><%= metric.values.avg.toFixed(2) %></td>
-            <% } else { %>
-            <td>-</td>
-            <% } %>
-
-            <% if(metric.values.max) { %>
-            <td class="<%= checkFailed(metric, 'max') %>"><%= metric.values.max.toFixed(2) %></td>
-            <% } else { %>
-            <td>-</td>
-            <% } %>
-
-            <% if(metric.values.med) { %>
-            <td class="<%= checkFailed(metric, 'med') %>"><%= metric.values.med.toFixed(2) %></td>
-            <% } else { %>
-            <td>-</td>
-            <% } %>
-
-            <% if(metric.values.min) { %>
-            <td class="<%= checkFailed(metric, 'min') %>"><%= metric.values.min.toFixed(2) %></td>
-            <% } else { %>
-            <td>-</td>
-            <% } %>
-
-            <% if(metric.values['p(90)']) { %>
-            <td class="<%= checkFailed(metric, 'p(90)') %>"><%= metric.values['p(90)'].toFixed(2) %></td>
-            <% } else { %>
-            <td>-</td>
-            <% } %>
-
-            <% if(metric.values['p(95)']) { %>
-            <td class="<%= checkFailed(metric, 'p(95)') %>"><%= metric.values['p(95)'].toFixed(2) %></td>
-            <% } else { %>
-            <td>-</td>
-            <% } %>
-
-            <% if(metric.values['p(99)']) { %>
-            <td class="<%= checkFailed(metric, 'p(99)') %>"><%= metric.values['p(99)'].toFixed(5) %></td>
-            <% } else { %>
-            <td>-</td>
-            <% } %>
-          </tr>
-          <% } %>
-        </tbody>
-      </table>
-      <br>
-
-      <% 
+        <% 
           first = true 
           var sortedMetrics = {}
           Object.keys(data.metrics).sort().forEach(function(k) {
             sortedMetrics[k] = data.metrics[k]
           });
           for(metricName in sortedMetrics) {
-            if(standardMetrics.includes(metricName) || otherMetrics.includes(metricName)) { continue }
-            var metric = sortedMetrics[metricName] 
+            if(standardMetrics.includes(metricName) || otherMetrics.includes(metricName) || !metricName.includes("counter")) { continue }
+            var counter = sortedMetrics[metricName] 
         %>
-      <% if(first) { first = false %> <h2>Custom Metrics</h2>
-      <table class="pure-table pure-table-striped">
-        <tbody>
+        <% if(first) { first = false %> <h2>Status Counters</h2>
+        <table class="pure-table pure-table-horizontal" style="width: 100%">
           <thead>
             <tr>
-              <th></th>
+              <th>Counter Name</th>
               <th>Count</th>
               <th>Rate</th>
-              <th>Average</th>
-              <th>Maximum</th>
-              <th>Median</th>
-              <th>Minimum</th>
-              <th>90th Percentile</th>
-              <th>95th Percentile</th>
-              <th>99th Percentile</th>
             </tr>
           </thead>
           <% } %>
           <tr>
-            <td><b><%= metricName %></b></td>
+            <td width="50%"><%= metricName.replaceAll("_", " ").replace("counter", "") %></td>
 
-            <% if(metric.values.count) { %>
-            <td class="<%= checkFailed(metric, 'count') %>"><%= metric.values.count.toFixed(2) %></td>
+            <% if(counter.values.count) { %>
+            <td class="<%= checkFailed(counter, 'count') %>"><%= counter.values.count %></td>
             <% } else { %>
             <td>-</td>
             <% } %>
 
-            <% if(metric.values.rate) { %>
-            <td class="<%= checkFailed(metric, 'rate') %>"><%= metric.values.rate.toFixed(2) %></td>
-            <% } else { %>
-            <td>-</td>
-            <% } %>
-
-            <% if(metric.values.avg) { %>
-            <td class="<%= checkFailed(metric, 'avg') %>"><%= metric.values.avg.toFixed(2) %></td>
-            <% } else { %>
-            <td>-</td>
-            <% } %>
-
-            <% if(metric.values.max) { %>
-            <td class="<%= checkFailed(metric, 'max') %>"><%= metric.values.max.toFixed(2) %></td>
-            <% } else { %>
-            <td>-</td>
-            <% } %>
-
-            <% if(metric.values.med) { %>
-            <td class="<%= checkFailed(metric, 'med') %>"><%= metric.values.med.toFixed(2) %></td>
-            <% } else { %>
-            <td>-</td>
-            <% } %>
-
-            <% if(metric.values.min) { %>
-            <td class="<%= checkFailed(metric, 'min') %>"><%= metric.values.min.toFixed(2) %></td>
-            <% } else { %>
-            <td>-</td>
-            <% } %>
-
-            <% if(metric.values['p(90)']) { %>
-            <td class="<%= checkFailed(metric, 'p(90)') %>"><%= metric.values['p(90)'].toFixed(2) %></td>
-            <% } else { %>
-            <td>-</td>
-            <% } %>
-
-            <% if(metric.values['p(95)']) { %>
-            <td class="<%= checkFailed(metric, 'p(95)') %>"><%= metric.values['p(95)'].toFixed(2) %></td>
-            <% } else { %>
-            <td>-</td>
-            <% } %>
-
-            <% if(metric.values['p(99)']) { %>
-            <td class="<%= checkFailed(metric, 'p(99)') %>"><%= metric.values['p(99)'].toFixed(2) %></td>
+            <% if(counter.values.rate) { %>
+            <td class="<%= checkFailed(counter, 'rate') %>"><%= counter.values.rate.toFixed(2) %></td>
             <% } else { %>
             <td>-</td>
             <% } %>
           </tr>
           <% } %>
-        </tbody>
-      </table>
-      <br>
-
-
-      &nbsp;&nbsp; Note. All times are in milli-seconds
-    </div>
-    <!-- ---- end tab ---- -->
-
-    <input type="radio" name="tabs" id="tabtwo">
-    <label for="tabtwo"><i class="fas fa-chart-line"></i> &nbsp; Other Stats</label>
-    <div class="tab">
-      <div class="row">
-        <% if (data.metrics.checks) { %>
-        <div class="box metricbox">
-          <h4>Checks</h4>
-          <i class="fas fa-eye icon"></i>
-          <div class="row">
-            <div>Passed</div>
-            <div><%= data.metrics.checks.values.passes %></div>
-          </div>
-          <div class="row">
-            <div>Failed</div>
-            <div><%= data.metrics.checks.values.fails %></div>
-          </div>
-        </div>
+        </table>
+        <br>
+        <% for(group of data.root_group.groups) { %>
+        <h2> Group - <%= group.name %></h2>
+        <table class="pure-table pure-table-horizontal" style="width: 100%">
+          <thead>
+            <tr>
+              <th>Check Name</th>
+              <th>Passes</th>
+              <th>Failures</th>
+            </tr>
+          </thead>
+          <% for(check of group.checks) { %>
+          <tr class="checkDetails <% if(check.fails > 0) { %>failed<% } %>">
+            <td width="50%"><%= check.name %></td>
+            <td><%= check.passes %></td>
+            <td><%= check.fails %></td>
+          </tr>
+          <% } %>
+        </table>
+        <br>
         <% } %>
 
-        <% if (data.metrics.iterations) { %>
-        <div class="box metricbox">
-          <h4>Iterations</h4>
-          <i class="fas fa-redo icon"></i>
-          <div class="row">
-            <div>Total</div>
-            <div><%= data.metrics.iterations.values.count %></div>
+        <h2> Checks</h2>
+        <table class="pure-table pure-table-horizontal" style="width: 100%">
+          <thead>
+            <tr>
+              <th>Check Name</th>
+              <th>Passes</th>
+              <th>Failures</th>
+            </tr>
+          </thead>
+          <% for(check of data.root_group.checks) { %>
+          <tr class="checkDetails <% if(check.fails > 0) { %>failed<% } %>">
+            <td width="50%"><%= check.name %></td>
+            <td><%= check.passes %></td>
+            <td><%= check.fails %></td>
+          </tr>
+          <% } %>
+        </table>
+        <br>
+
+
+        &nbsp;&nbsp; Note. All times are in milli-seconds
+      </div>
+      <!-- ---- end tab ---- -->
+
+      <input type="radio" name="tabs" id="tabtwo">
+      <label for="tabtwo"><i class="fas fa-chart-line"></i> &nbsp; Other Stats</label>
+      <div class="tab">
+        <div class="row">
+          <% if (data.metrics.iterations) { %>
+          <div class="box metricbox">
+            <h4>Iterations</h4>
+            <i class="fas fa-redo icon"></i>
+            <div class="row">
+              <div>Total</div>
+              <div><%= data.metrics.iterations.values.count %></div>
+            </div>
+            <div class="row">
+              <div>Rate</div>
+              <div><%= data.metrics.iterations.values.rate.toFixed(2) %>/s</div>
+            </div>
           </div>
-          <div class="row">
-            <div>Rate</div>
-            <div><%= data.metrics.iterations.values.rate.toFixed(2) %>/s</div>
+          <% } %>
+
+          <div class="box metricbox">
+            <h4>Virtual Users</h4>
+            <i class="fas fa-user icon"></i>
+            <div class="row">
+              <div>Min</div>
+              <div><%= data.metrics.vus ? data.metrics.vus.values.min : 1 %></div>
+            </div>
+            <div class="row">
+              <div>Max</div>
+              <div><%= data.metrics.vus ? data.metrics.vus.values.max : 1 %></div>
+            </div>
           </div>
         </div>
-        <% } %>
 
-        <div class="box metricbox">
-          <h4>Virtual Users</h4>
-          <i class="fas fa-user icon"></i>
-          <div class="row">
-            <div>Min</div>
-            <div><%= data.metrics.vus ? data.metrics.vus.values.min : 1 %></div>
+        <div class="row">
+          <div class="box metricbox">
+            <h4>Data Received</h4>
+            <i class="fas fa-cloud-download-alt icon"></i>
+            <div class="row">
+              <div>Total</div>
+              <div><%= (data.metrics.data_received.values.count/1000000).toFixed(2) %> MB</div>
+            </div>
+            <div class="row">
+              <div>Rate</div>
+              <div><%= (data.metrics.data_received.values.rate/1000000).toFixed(2) %> mB/s</div>
+            </div>
           </div>
-          <div class="row">
-            <div>Max</div>
-            <div><%= data.metrics.vus ? data.metrics.vus.values.max : 1 %></div>
+
+          <div class="box metricbox">
+            <h4>Data Sent</h4>
+            <i class="fas fa-cloud-upload-alt icon"></i>
+            <div class="row">
+              <div>Total</div>
+              <div><%= (data.metrics.data_sent.values.count/1000000).toFixed(2) %> MB</div>
+            </div>
+            <div class="row">
+              <div>Rate</div>
+              <div><%= (data.metrics.data_sent.values.rate/1000000).toFixed(2) %> mB/s</div>
+            </div>
           </div>
         </div>
       </div>
+      <!-- ---- end tab ---- -->
 
-      <div class="row">
-        <div class="box metricbox">
-          <h4>Requests</h4>
-          <i class="fas fa-globe icon"></i>
-          <div class="row">
-            <div>Total</div>
-            <div><% if(data.metrics.http_reqs) { %><%= data.metrics.http_reqs.values.count %><% } %></div>
-          </div>
-          <div class="row">
-            <div>Rate</div>
-            <div><% if(data.metrics.http_reqs) { %><%= data.metrics.http_reqs.values.rate.toFixed(2) %>/s<% } %></div>
-          </div>
-        </div>
+      <input type="radio" name="tabs" id="tabthree">
+      <label for="tabthree" hidden><i class="fas fa-tasks"></i> Checks & Groups</label>
+      <div class="tab">
 
-        <div class="box metricbox">
-          <h4>Data Received</h4>
-          <i class="fas fa-cloud-download-alt icon"></i>
-          <div class="row">
-            <div>Total</div>
-            <div><%= (data.metrics.data_received.values.count/1000000).toFixed(2) %> MB</div>
-          </div>
-          <div class="row">
-            <div>Rate</div>
-            <div><%= (data.metrics.data_received.values.rate/1000000).toFixed(2) %> mB/s</div>
-          </div>
-        </div>
+        <% for(group of data.root_group.groups) { %>
+        <h2>&bull; Group - <%= group.name %></h2>
+        <table class="pure-table pure-table-horizontal" style="width: 100%">
+          <thead>
+            <tr>
+              <th>Check Name</th>
+              <th>Passes</th>
+              <th>Failures</th>
+            </tr>
+          </thead>
+          <% for(check of group.checks) { %>
+          <tr class="checkDetails <% if(check.fails > 0) { %>failed<% } %>">
+            <td width="50%"><%= check.name %></td>
+            <td><%= check.passes %></td>
+            <td><%= check.fails %></td>
+          </tr>
+          <% } %>
+        </table>
+        <br>
+        <% } %>
 
-        <div class="box metricbox">
-          <h4>Data Sent</h4>
-          <i class="fas fa-cloud-upload-alt icon"></i>
-          <div class="row">
-            <div>Total</div>
-            <div><%= (data.metrics.data_sent.values.count/1000000).toFixed(2) %> MB</div>
-          </div>
-          <div class="row">
-            <div>Rate</div>
-            <div><%= (data.metrics.data_sent.values.rate/1000000).toFixed(2) %> mB/s</div>
-          </div>
-        </div>
+        <h2>&bull; Other Checks</h2>
+        <table class="pure-table pure-table-horizontal" style="width: 100%">
+          <thead>
+            <tr>
+              <th>Check Name</th>
+              <th>Passes</th>
+              <th>Failures</th>
+            </tr>
+          </thead>
+          <% for(check of data.root_group.checks) { %>
+          <tr class="checkDetails <% if(check.fails > 0) { %>failed<% } %>">
+            <td width="50%"><%= check.name %></td>
+            <td><%= check.passes %></td>
+            <td><%= check.fails %></td>
+          </tr>
+          <% } %>
+        </table>
       </div>
-    </div>
-    <!-- ---- end tab ---- -->
+      <!-- ---- end tab ---- -->
 
-    <input type="radio" name="tabs" id="tabthree">
-    <label for="tabthree"><i class="fas fa-tasks"></i> Checks & Groups</label>
-    <div class="tab">
+      <input type="radio" name="tabs" id="tabfour">
+      <label for="tabfour"><i class="fas fa-tasks"></i> Threshold Limits</label>
+      <div class="tab">
+        <h1>&bull; Thresholds</h1>
 
-      <% for(group of data.root_group.groups) { %>
-      <h2>&bull; Group - <%= group.name %></h2>
-      <table class="pure-table pure-table-horizontal" style="width: 100%">
-        <thead>
-          <tr>
-            <th>Check Name</th>
-            <th>Passes</th>
-            <th>Failures</th>
-          </tr>
-        </thead>
-        <% for(check of group.checks) { %>
-        <tr class="checkDetails <% if(check.fails > 0) { %>failed<% } %>">
-          <td width="50%"><%= check.name %></td>
-          <td><%= check.passes %></td>
-          <td><%= check.fails %></td>
-        </tr>
-        <% } %>
-      </table>
-      <br>
-      <% } %>
-
-      <h2>&bull; Other Checks</h2>
-      <table class="pure-table pure-table-horizontal" style="width: 100%">
-        <thead>
-          <tr>
-            <th>Check Name</th>
-            <th>Passes</th>
-            <th>Failures</th>
-          </tr>
-        </thead>
-        <% for(check of data.root_group.checks) { %>
-        <tr class="checkDetails <% if(check.fails > 0) { %>failed<% } %>">
-          <td width="50%"><%= check.name %></td>
-          <td><%= check.passes %></td>
-          <td><%= check.fails %></td>
-        </tr>
-        <% } %>
-      </table>
-    </div>
-    <!-- ---- end tab ---- -->
-
-    <input type="radio" name="tabs" id="tabfour">
-    <label for="tabfour"><i class="fas fa-tasks"></i> Threshold Limits</label>
-    <div class="tab">
-      <h1>&bull; Thresholds</h1>
-
-      <%
+        <%
         function splitThresholds(threshold) {
           thresholdlist = JSON.stringify(threshold)
           thresholdlist = thresholdlist.replace("[", "")
@@ -540,24 +526,24 @@
         if(!data.metrics[metricName]) { continue }
         var metric = data.metrics[metricName] 
       %>
-      <!-- need to add what this threshold applies to and clean up  -->
-      <% if(metric.thresholds) { thresholdArray = splitThresholds(Object.keys(metric.thresholds)) %>
-      <h2>&bull; <%= metricName %></h2>
-      <div class="row">
-        <% for(thresh of thresholdArray) {%>
-        <div class="box metricbox">
-          <h4> <%= thresh%> </h4>
+        <!-- need to add what this threshold applies to and clean up  -->
+        <% if(metric.thresholds) { thresholdArray = splitThresholds(Object.keys(metric.thresholds)) %>
+        <h2>&bull; <%= metricName %></h2>
+        <div class="row">
+          <% for(thresh of thresholdArray) {%>
+          <div class="box metricbox">
+            <h4> <%= thresh%> </h4>
+          </div>
+          <% } %>
         </div>
         <% } %>
+        <% } %>
       </div>
-      <% } %>
-      <% } %>
+
+      <!-- ---- end tab ---- -->
+
     </div>
-
-    <!-- ---- end tab ---- -->
-
-  </div>
-  <footer>K6 Reporter v<%= version %> - Ben Coleman 2021, <a href="https://github.com/benc-uk/k6-reporter">[GitHub]</a></footer>
+    <footer>K6 Reporter v<%= version %> - Ben Coleman 2021, <a href="https://github.com/benc-uk/k6-reporter">[GitHub]</a></footer>
 </body>
 
 </html>
