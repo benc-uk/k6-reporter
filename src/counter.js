@@ -16,10 +16,10 @@ export class Counters {
     }
 
     counterInit(endpoint, status) {
-        return new Counter('Status_' + status + "_counter_" + this.urlToCamel(endpoint.replace('https://', '')));
+        return new Counter('Status_' + status + "_counter_" + this.formatUrl(endpoint.replace('https://', '')));
     }
 
-    urlToCamel = str =>
+    formatUrl = str =>
         str.toLowerCase().replace(/([\/\-_.=?%&][a-zA-Z0-9])/g, group =>
             group
                 .toUpperCase()
@@ -31,7 +31,7 @@ export class Counters {
                 .replace('?', '')
                 .replace('%', '')
                 .replace('&', '')
-        );
+        ).substring(0, 94);
     get counterMatrix() {
         return this.counterMatrix
     }
