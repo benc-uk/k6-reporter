@@ -20,13 +20,15 @@ export class Counters {
     }
 
     urlToCamel = str =>
-        str.toLowerCase().replace(/([/-_.][a-zA-Z0-9])/g, group =>
+        str.toLowerCase().replace(/([/-_.=?][a-zA-Z0-9])/g, group =>
             group
                 .toUpperCase()
                 .replace('-', '')
                 .replace('/', '')
                 .replace('_', '')
                 .replace('.', '')
+                .replace('=', '')
+                .replace('?', '')
         );
     get counterMatrix() {
         return this.counterMatrix
