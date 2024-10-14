@@ -417,15 +417,15 @@
         <table class="pure-table pure-table-horizontal" style="width: 100%">
           <thead>
             <th></th>
-            <%for(endpoint of endpointList){%>
-            <th><%=endpoint %></th>
+            <%for(counter of Object.keys(counterMatrix)){%>
+            <th><%=counter %></th>
             <%}%>
           </thead>
-          <%for(counter of Object.keys(counterMatrix)){%>
+          <%for(endpoint of endpointList){%>
             <tr>
-              <td width="50%"><%= counter %></td>
+              <td width="50%"><%= endpoint %></td>
 
-              <%for(endpoint of endpointList) {
+              <%for(counter of Object.keys(counterMatrix)) {
                 if(counterMatrix[counter][endpoint] != undefined) {%>
               <td><%= counterMatrix[counter][endpoint].values.count + ' / ' +  (counterMatrix[counter][endpoint].values.count/data.metrics.http_reqs.values.count*100).toFixed(2) + "%" %></td>
               <%} else {%>
