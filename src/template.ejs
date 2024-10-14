@@ -394,7 +394,6 @@
         let statusKey = '';
         let endpointList = [];
         for(metricName in sortedMetrics) {
-          console.log('metric Name: ' + metricName)
           if(standardMetrics.includes(metricName) || otherMetrics.includes(metricName) || !metricName.includes("counter")) { continue }
           counterList[metricName] = sortedMetrics[metricName]
         }
@@ -413,8 +412,6 @@
           let endpoint = counterName.split('_')[3];
           if(!endpointList.includes(endpoint)) endpointList.push(endpoint)
         }
-        console.log('This is the endpoint List: ' + endpointList)
-        console.log('This is the counterMatrix ' + JSON.stringify(counterMatrix))
         %>
         <h2>Counter Matrix</h2>
         <table class="pure-table pure-table-horizontal" style="width: 100%">
