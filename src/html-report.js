@@ -92,12 +92,35 @@ export function htmlReport(data, opts = {}) {
     'http_req_duration{expected_response:true}',
   ]
 
+  const metricStats = [
+    'count',
+    'avg',
+    'max',
+    'med',
+    'min',
+    'p(90)',
+    'p(95)',
+    'p(99)',
+  ]
+
+  const statusList = [
+    '200',
+    '404',
+    '500',
+    '501',
+    '502',
+    '503',
+    '504',
+    'otherRequestError',
+  ]
   // Render the template
   const html = ejs.render(template, {
     data,
     title: opts.title,
     standardMetrics,
     otherMetrics,
+    metricStats,
+    statusList,
     thresholdFailures,
     thresholdCount,
     checkFailures,

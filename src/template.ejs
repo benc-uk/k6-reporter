@@ -139,8 +139,8 @@
       top: 60%;
       left: 50%;
       transform: translate(-50%, -50%);
-      color: #0000002d;
-      font-size: 8vw;
+      color: #43444325;
+      font-size: 5vw;
       z-index: 1;
     }
 
@@ -153,6 +153,31 @@
     .metricbox .row {
       position: relative;
       z-index: 20;
+    }
+
+    .tooltip {
+      position: relative;
+      display: inline-block;
+    }
+
+    /* Tooltip text */
+    .tooltip .tooltiptext {
+      visibility: hidden;
+      width: 120px;
+      background-color: black;
+      color: #fff;
+      text-align: center;
+      padding: 5px 0;
+      border-radius: 6px;
+
+      /* Position the tooltip text - see examples below! */
+      position: absolute;
+      z-index: 1;
+    }
+
+    /* Show the tooltip text when you mouse over the tooltip container */
+    .tooltip:hover .tooltiptext {
+      visibility: visible;
     }
   </style>
 </head>
@@ -180,7 +205,7 @@
       </div>
     </div>
     <% if(data.metrics.http_req_failed && data.metrics.http_req_failed.values) { %>
-    <div class="box <% var fails; if(data.metrics.http_req_failed.values.passes > 0) { fails = true %> failed <% } %>">
+    <div class="box <% var fails; if(checkFailed(data.metrics['http_req_failed'], 'rate') == 'failed') { fails = true %> failed <% } %>">
       <i class="far fa-times-circle icon"></i>
       <h4>Failed Requests</h4>
       <% if(fails) {  %>
@@ -194,7 +219,7 @@
         <div><%= failedRate.toFixed(2) + '%' %></div>
       </div>
       <%} else {%>
-        <div class="bignum"><%= data.metrics.http_req_failed.values.passes %></div>
+      <div class="bignum"><%= data.metrics.http_req_failed.values.passes %></div>
       <%}%>
     </div>
     <% } %>
@@ -230,7 +255,6 @@
               <tr>
                 <th></th>
                 <th>Count</th>
-                <th>Rate</th>
                 <th>Average</th>
                 <th>Maximum</th>
                 <th>Median</th>
@@ -242,81 +266,69 @@
             </thead>
 
             <% function checkFailed(metric, valName) {
-                if(!metric.thresholds) return ''
+              thres = getThreshold(metric, valName)  
+              if(!thres) return ''
+              if(!metric.thresholds[thres].ok) return 'failed' 
+                    return 'good'
+                  }
+
+              function getThreshold(metric, valName) {
                 for(thres in metric.thresholds) {
                   if(thres.includes(valName)) {
-                    if(!metric.thresholds[thres].ok) return 'failed'
-                    return 'good'
+                    return thres
                   }
                 }
               }
 
-              for(metricName of standardMetrics) { 
-                if(!data.metrics[metricName]) { continue }
-                var metric = data.metrics[metricName] 
-            %>
+        for(metricName of standardMetrics) {
+        if(!data.metrics[metricName]) { continue }
+        var metric = data.metrics[metricName]
+        %>
             <tr>
               <td><b><%= metricName %></b></td>
 
-              <% if(metric.values.count) { %>
-              <td class="<%= checkFailed(metric, 'count') %>"><%= metric.values.count.toFixed(2) %></td>
+              <% for(metricStat of metricStats) { 
+           if(metric.values[metricStat]) {%>
+              <td class="<%= checkFailed(metric, metricStat) %>" title="<%= checkFailed(metric, metricStat) + " threshold " + getThreshold(metric, metricStat)%>"><%= metric.values[metricStat].toFixed(2) %></td>
               <% } else { %>
               <td>-</td>
-              <% } %>
-
-              <% if(metric.values.rate) { %>
-              <td class="<%= checkFailed(metric, 'rate') %>"><%= metric.values.rate.toFixed(2) %></td>
+              <% } }%>
+            </tr>
+            <%}%>
+        </tbody>
+        </table>
+        <br>
+        <h2>Data Transfer</h2>
+        <table class="pure-table pure-table-horizontal" style="width: 100%">
+          <thead>
+            <tr>
+              <th></th>
+              <th>Total</th>
+              <th>Rate</th>
+            </tr>
+          </thead>
+          <tr>
+            <td width="50%">Data Received</td>
+            <% if(data.metrics.data_received) { %>
+            <td><%= (data.metrics.data_received.values.count/1000000).toFixed(2) %> MB</td>
+            <td><%=(data.metrics.data_received.values.rate/1000000).toFixed(2) %> mB/s</td>
+            <% } else { %>
+            <td>-</td>
+            <td>-</td>
+            <% } %>
+            </tr>
+            <tr>
+              <td width="50%">Data Sent</td>
+              <% if(data.metrics.data_sent) { %>
+              <td><%= (data.metrics.data_sent.values.count/1000000).toFixed(2) %> MB</td>
+              <td><%=(data.metrics.data_sent.values.rate/1000000).toFixed(2) %> mB/s</td>
               <% } else { %>
               <td>-</td>
-              <% } %>
-
-              <% if(metric.values.avg) { %>
-              <td class="<%= checkFailed(metric, 'avg') %>"><%= metric.values.avg.toFixed(2) %></td>
-              <% } else { %>
-              <td>-</td>
-              <% } %>
-
-              <% if(metric.values.max) { %>
-              <td class="<%= checkFailed(metric, 'max') %>"><%= metric.values.max.toFixed(2) %></td>
-              <% } else { %>
-              <td>-</td>
-              <% } %>
-
-              <% if(metric.values.med) { %>
-              <td class="<%= checkFailed(metric, 'med') %>"><%= metric.values.med.toFixed(2) %></td>
-              <% } else { %>
-              <td>-</td>
-              <% } %>
-
-              <% if(metric.values.min) { %>
-              <td class="<%= checkFailed(metric, 'min') %>"><%= metric.values.min.toFixed(2) %></td>
-              <% } else { %>
-              <td>-</td>
-              <% } %>
-
-              <% if(metric.values['p(90)']) { %>
-              <td class="<%= checkFailed(metric, 'p(90)') %>"><%= metric.values['p(90)'].toFixed(2) %></td>
-              <% } else { %>
-              <td>-</td>
-              <% } %>
-
-              <% if(metric.values['p(95)']) { %>
-              <td class="<%= checkFailed(metric, 'p(95)') %>"><%= metric.values['p(95)'].toFixed(2) %></td>
-              <% } else { %>
-              <td>-</td>
-              <% } %>
-
-              <% if(metric.values['p(99)']) { %>
-              <td class="<%= checkFailed(metric, 'p(99)') %>"><%= metric.values['p(99)'].toFixed(5) %></td>
-              <% } else { %>
               <td>-</td>
               <% } %>
             </tr>
-            <% } %>
-          </tbody>
         </table>
         <br>
-
         <% 
           first = true 
           var sortedMetrics = {}
@@ -347,7 +359,7 @@
             <% } %>
 
             <% if(counter.values.rate) { %>
-            <td class="<%= checkFailed(counter, 'rate') %>"><%= counter.values.rate.toFixed(2) %></td>
+            <td class="<%= checkFailed(counter, 'rate') %>"><%= (counter.values.count/data.metrics.http_reqs.values.count*100).toFixed(2) + "%" %></td>
             <% } else { %>
             <td>-</td>
             <% } %>
@@ -376,6 +388,59 @@
         <br>
         <% } %>
 
+        <% 
+        let counterList = {};
+        let counterMatrix = {};
+        let statusKey = '';
+        let endpointList = [];
+        for(metricName in sortedMetrics) {
+          console.log('metric Name: ' + metricName)
+          if(standardMetrics.includes(metricName) || otherMetrics.includes(metricName) || !metricName.includes("counter")) { continue }
+          counterList[metricName] = sortedMetrics[metricName]
+        }
+
+        for(statusCode of statusList) {
+          statusKey = 'Status ' + statusCode;
+          counterMatrix[statusKey] = Object.keys(counterList)
+          .filter(key => key.includes(statusCode))
+          .reduce((obj, key) => {
+            obj[key.split('_')[3]] = counterList[key];
+            return obj;
+          }, {});
+        }
+
+        for(counterName of Object.keys(counterList)) {
+          let endpoint = counterName.split('_')[3];
+          if(!endpointList.includes(endpoint)) endpointList.push(endpoint)
+        }
+        console.log('This is the endpoint List: ' + endpointList)
+        console.log('This is the counterMatrix ' + JSON.stringify(counterMatrix))
+        %>
+        <h2>Counter Matrix</h2>
+        <table class="pure-table pure-table-horizontal" style="width: 100%">
+          <thead>
+            <th></th>
+            <%for(endpoint of endpointList){%>
+            <th><%=endpoint %></th>
+            <%}%>
+          </thead>
+          <%for(counter of Object.keys(counterMatrix)){%>
+            <tr>
+              <td width="50%"><%= counter %></td>
+
+              <%for(endpoint of endpointList) {
+                if(counterMatrix[counter][endpoint] != undefined) {%>
+              <td><%= counterMatrix[counter][endpoint].values.count + ' / ' +  (counterMatrix[counter][endpoint].values.count/data.metrics.http_reqs.values.count*100).toFixed(2) + "%" %></td>
+              <%} else {%>
+              <td> - </td>
+              <%}}%>
+            </tr>
+
+            <%}%>
+        </table>
+        <br>
+
+
         <h2> Checks</h2>
         <table class="pure-table pure-table-horizontal" style="width: 100%">
           <thead>
@@ -386,12 +451,12 @@
             </tr>
           </thead>
           <% for(check of data.root_group.checks) { %>
-          <tr class="checkDetails <% if(check.fails > 0) { %>failed<% } %>">
-            <td width="50%"><%= check.name %></td>
-            <td><%= check.passes %></td>
-            <td><%= check.fails %></td>
-          </tr>
-          <% } %>
+            <tr class="checkDetails <% if(check.fails > 0) { %>failed<% } %>">
+              <td width="50%"><%= check.name %></td>
+              <td><%= check.passes %></td>
+              <td><%= check.fails %></td>
+            </tr>
+            <% } %>
         </table>
         <br>
 
@@ -429,34 +494,6 @@
             <div class="row">
               <div>Max</div>
               <div><%= data.metrics.vus ? data.metrics.vus.values.max : 1 %></div>
-            </div>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="box metricbox">
-            <h4>Data Received</h4>
-            <i class="fas fa-cloud-download-alt icon"></i>
-            <div class="row">
-              <div>Total</div>
-              <div><%= (data.metrics.data_received.values.count/1000000).toFixed(2) %> MB</div>
-            </div>
-            <div class="row">
-              <div>Rate</div>
-              <div><%= (data.metrics.data_received.values.rate/1000000).toFixed(2) %> mB/s</div>
-            </div>
-          </div>
-
-          <div class="box metricbox">
-            <h4>Data Sent</h4>
-            <i class="fas fa-cloud-upload-alt icon"></i>
-            <div class="row">
-              <div>Total</div>
-              <div><%= (data.metrics.data_sent.values.count/1000000).toFixed(2) %> MB</div>
-            </div>
-            <div class="row">
-              <div>Rate</div>
-              <div><%= (data.metrics.data_sent.values.rate/1000000).toFixed(2) %> mB/s</div>
             </div>
           </div>
         </div>
