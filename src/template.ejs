@@ -357,6 +357,7 @@
               <i class="fas fa-eye icon"></i>
               <div class="row"><div>Passed</div><div><%= data.metrics.checks.values.passes %></div></div>
               <div class="row"><div>Failed</div><div><%= data.metrics.checks.values.fails %></div></div>
+              <div class="row"><div>% Passed</div><div><%= (data.metrics.checks.values.passes /(data.metrics.checks.values.passes + data.metrics.checks.values.fails)) *100 %></div></div>
             </div>
           <% } %>
 
