@@ -19,6 +19,9 @@ jobs:
       - name: Lint Check
         run: npm run lint
 
+      - name: set env
+        run: export NODE_OPTIONS=--openssl-legacy-provider
+        
       - name: Bundle
         run: npm run build
 
