@@ -419,7 +419,7 @@
             </thead>
             <% for(check of group.checks) { %>
               <tr class="checkDetails <% if(check.fails > 0) { %>failed<% } %>">
-                <td width="50%"><%= check.name %></td><td><%= check.passes %></td><td><%= check.fails %></td><td><%= parseFloat(check.passes / (check.fails +check.passes)).toFixed(2) %></td>
+                <td width="50%"><%= check.name %></td><td><%= check.passes %></td><td><%= check.fails %></td><td><%= parseFloat((check.passes / (check.fails +check.passes))*100).toFixed(2) %></td>
 
               </tr>
             <% } %>
@@ -438,7 +438,7 @@
           </thead>
           <% for(check of data.root_group.checks) { %>
             <tr class="checkDetails <% if(check.fails > 0) { %>failed<% } %>">
-              <td width="50%"><%= check.name %></td><td><%= check.passes %></td><td><%= check.fails %></td><td><%= parseFloat(check.passes / (check.fails +check.passes)).toFixed(2) %></td>
+              <td width="50%"><%= check.name %></td><td><%= check.passes %></td><td><%= check.fails %></td><td><%= parseFloat((check.passes / (check.fails +check.passes))*100).toFixed(2) %></td>
             </tr>
           <% } %>
         </table>     
