@@ -15,12 +15,16 @@ jobs:
 
       - name: NPM Install
         run: npm install --silent
+        env:
+          NODE_OPTIONS: --openssl-legacy-provider
 
       - name: Lint Check
         run: npm run lint
-
+        
       - name: Bundle
         run: npm run build
+        env:
+          NODE_OPTIONS: --openssl-legacy-provider
 
       - name: Add dist bundle
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
