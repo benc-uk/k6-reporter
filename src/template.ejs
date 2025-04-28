@@ -357,7 +357,7 @@
               <i class="fas fa-eye icon"></i>
               <div class="row"><div>Passed</div><div><%= data.metrics.checks.values.passes %></div></div>
               <div class="row"><div>Failed</div><div><%= data.metrics.checks.values.fails %></div></div>
-              <div class="row"><div>% Passed</div><div><%= (data.metrics.checks.values.passes /(data.metrics.checks.values.passes + data.metrics.checks.values.fails)) *100 %></div></div>
+              <div class="row"><div>%</div><div><%= parseFloat((data.metrics.checks.values.passes /(data.metrics.checks.values.passes + data.metrics.checks.values.fails)) *100).toFixed(2) %></div></div>
             </div>
           <% } %>
 
@@ -419,7 +419,8 @@
             </thead>
             <% for(check of group.checks) { %>
               <tr class="checkDetails <% if(check.fails > 0) { %>failed<% } %>">
-                <td width="50%"><%= check.name %></td><td><%= check.passes %></td><td><%= check.fails %></td>
+                <td width="50%"><%= check.name %></td><td><%= check.passes %></td><td><%= check.fails %></td><td><%= parseFloat(check.passes / (check.fails +check.passes)).toFixed(2) %></td>
+
               </tr>
             <% } %>
           </table>
@@ -437,7 +438,7 @@
           </thead>
           <% for(check of data.root_group.checks) { %>
             <tr class="checkDetails <% if(check.fails > 0) { %>failed<% } %>">
-              <td width="50%"><%= check.name %></td><td><%= check.passes %></td><td><%= check.fails %></td>
+              <td width="50%"><%= check.name %></td><td><%= check.passes %></td><td><%= check.fails %></td><td><%= parseFloat(check.passes / (check.fails +check.passes)).toFixed(2) %></td>
             </tr>
           <% } %>
         </table>     
