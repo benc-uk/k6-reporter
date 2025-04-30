@@ -3,144 +3,55 @@
   <head> 
     <meta charset="UTF-8" />
     <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.3/build/pure-min.css" crossorigin="anonymous">
-
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css" crossorigin="anonymous">
-
     <link rel="shortcut icon" href="https://raw.githubusercontent.com/benc-uk/k6-reporter/main/assets/icon.png" type="image/png">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>K6 Load Test: <%= title %></title>
     <style>
-      body {
-        margin: 1rem;
-      }
-      footer { 
-        float: right;
-        font-size: 0.8rem;
-        color: #777;
-      }
-      footer a {
-        text-decoration: none;
-        color: #777;
-      }
-      .failed {
-        background-color: #ff6666 !important;
-      }     
-      .good {
-        background-color: #3abe3a !important;
-      }   
-      td.failed {
-        font-weight: bold;
-      }
-      h2 {
-        padding-bottom: 4px;
-        border-bottom: solid 3px #cccccc;
-      }
-      .tabs {
-        display: flex;
-        flex-wrap: wrap; 
-      }
-      .tabs label {
-        order: 1; 
-        display: block;
-        padding: 1rem 2rem;
-        margin-right: 0.2rem;
-        cursor: pointer;
-        color: #666;
-        background: #ddd;
-        font-weight: bold;
-        font-size: 1.2rem;
-        flex: 1 1;
-        transition: background ease 0.2s;
-        border-top-left-radius: 0.3rem;
-        border-top-right-radius: 0.3rem;
-        border-color: #ccc;
-        border-style: solid;
-        border-width: 2px 2px 0px;
-        box-shadow: inset 0px -3px 7px -1px rgba(0,0,0,0.33);
-      }
-      .tabs .tab {
-        order: 99;
-        flex-grow: 1;
-        width: 100%;
-        display: none;
-        padding: 1rem;
-        background: #fff;
-      }
-      .tabs input[type="radio"] {
-        display: none;
-      }
-      .tabs input[type="radio"]:checked + label {
-        background: #fff;
-        box-shadow: none;
-        color: #000;
-      }
-      .tabs input[type="radio"]:checked + label + .tab {
-        display: block;
-      }
-      .box {
-        flex: 1 1;
-        border-radius: 0.3rem;
-        background-color: #3abe3a;
-        margin: 1rem;
-        padding: 0.5rem;
-        font-size: 2vw; 
-        box-shadow: 0px 4px 7px -1px rgba(0,0,0,0.49);
-        color: white;
-        position: relative;
-        overflow: hidden;
-      }
-      .box h4 {
-        margin: 0;
-        padding-bottom: 0.5rem;
-        text-align: center;
-        position: relative;
-        z-index: 50;
-      }
-      .row {
-        display: flex;
-      }
-      .row div {
-        flex: 1 1;
-        text-align: center;
-        margin-bottom: 0.5rem;
-      }
-      .bignum {
-        position: relative;
-        font-size: min(6vw, 80px);
-        z-index: 20;
-      }
-      table {
-        font-size: min(2vw, 22px);
-        width: 100%;
-      }
-      .icon { 
-        position: absolute;
-        top: 60%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        color: #0000002d;
-        font-size: 8vw;
-        z-index: 1;
-      }
-      .metricbox {
-        background-color: #5697e2;
-        font-size: 3vw;
-        height: auto;
-      }
-      .metricbox .row {
-        position: relative;
-        z-index: 20;
-      }
+      body { margin: 1rem; }
+      footer { float: right; font-size: 0.8rem; color: #777; }
+      footer a { text-decoration: none; color: #777; }
+      .failed { background-color: #ff6666 !important; }
+      .good { background-color: #3abe3a !important; }
+      td.failed { font-weight: bold; }
+      h2 { padding-bottom: 4px; border-bottom: solid 3px #cccccc; }
+      .tabs { display: flex; flex-wrap: wrap; }
+      .tabs label { order: 1; display: block; padding: 1rem 2rem; margin-right: 0.2rem; cursor: pointer;
+                    color: #666; background: #ddd; font-weight: bold; font-size: 1.2rem;
+                    flex: 1 1; transition: background ease 0.2s;
+                    border-top-left-radius: 0.3rem; border-top-right-radius: 0.3rem;
+                    border-color: #ccc; border-style: solid; border-width: 2px 2px 0px;
+                    box-shadow: inset 0px -3px 7px -1px rgba(0,0,0,0.33); }
+      .tabs .tab { order: 99; flex-grow: 1; width: 100%; display: none; padding: 1rem; background: #fff; }
+      .tabs input[type="radio"] { display: none; }
+      .tabs input[type="radio"]:checked + label { background: #fff; box-shadow: none; color: #000; }
+      .tabs input[type="radio"]:checked + label + .tab { display: block; }
+      .box { flex: 1 1; border-radius: 0.3rem; background-color: #3abe3a; margin: 1rem; padding: 0.5rem;
+              font-size: 2vw; box-shadow: 0px 4px 7px -1px rgba(0,0,0,0.49); color: white;
+              position: relative; overflow: hidden; }
+      .box h4 { margin: 0; padding-bottom: 0.5rem; text-align: center; }
+      .row { display: flex; }
+      .row div { flex: 1 1; text-align: center; margin-bottom: 0.5rem; }
+      .bignum { position: relative; font-size: min(6vw, 80px); z-index: 20; }
+      table { font-size: min(2vw, 22px); width: 100%; }
+      .icon { position: absolute; top: 60%; left: 50%; transform: translate(-50%, -50%);
+               color: #0000002d; font-size: 8vw; z-index: 1; }
+      .metricbox { background-color: #5697e2; font-size: 3vw; height: auto; }
+      .metricbox .row { position: relative; z-index: 20; }
     </style>
   </head>
 
   <body>
     <h1>
-      <svg style="vertical-align:middle" width="50" height="45" viewBox="0 0 50 45" fill="none" class="footer-module--logo--_lkxx"><path d="M31.968 34.681a2.007 2.007 0 002.011-2.003c0-1.106-.9-2.003-2.011-2.003a2.007 2.007 0 00-2.012 2.003c0 1.106.9 2.003 2.012 2.003z" fill="#7D64FF"></path><path d="M39.575 0L27.154 16.883 16.729 9.31 0 45h50L39.575 0zM23.663 37.17l-2.97-4.072v4.072h-2.751V22.038l2.75 1.989v7.66l3.659-5.014 2.086 1.51-3.071 4.21 3.486 4.776h-3.189v.001zm8.305.17c-2.586 0-4.681-2.088-4.681-4.662 0-1.025.332-1.972.896-2.743l4.695-6.435 2.086 1.51-2.239 3.07a4.667 4.667 0 013.924 4.6c0 2.572-2.095 4.66-4.681 4.66z" fill="#7D64FF"></path></svg> 
+      <!-- Logo SVG -->
+      <svg style="vertical-align:middle" width="50" height="45" viewBox="0 0 50 45" fill="none" class="footer-module--logo--_lkxx">
+        <path d="M31.968 34.681a2.007 2.007 0 002.011-2.003c0-1.106-.9-2.003-2.011-2.003a2.007 2.007 0 00-2.012 2.003c0 1.106.9 2.003 2.012 2.003z" fill="#7D64FF"/>
+        <path d="M39.575 0L27.154 16.883 16.729 9.31 0 45h50L39.575 0zM23.663 37.17l-2.97-4.072v4.072h-2.751V22.038l2.75 1.989v7.66l3.659-5.014 2.086 1.51-3.071 4.21 3.486 4.776h-3.189v.001zm8.305.17c-2.586 0-4.681-2.088-4.681-4.662 0-1.025.332-1.972.896-2.743l4.695-6.435 2.086 1.51-2.239 3.07a4.667 4.667 0 013.924 4.6c0 2.572-2.095 4.66-4.681 4.66z" fill="#7D64FF"/>
+      </svg> 
       &nbsp; K6 Load Test: <%= title %>
     </h1>
 
+    <!-- 總結數字 -->
     <div class="row">
       <div class="box">
         <i class="fas fa-globe icon"></i>
@@ -174,85 +85,59 @@
       <label for="tabone"><i class="far fa-clock"></i> &nbsp; Request Metrics</label>
       <div class="tab">
         <table class="pure-table pure-table-striped">
+          <thead>
+            <tr>
+              <th></th>
+              <th>Count</th>
+              <th>Rate</th>
+              <th>Average</th>
+              <th>Maximum</th>
+              <th>Median</th> 
+              <th>Minimum</th>
+              <th>90th Percentile</th>
+              <th>95th Percentile</th>
+            </tr>
+          </thead>
           <tbody>
-            <thead>
-              <tr>
-                <th></th>
-                <th>Count</th>
-                <th>Rate</th>
-                <th>Average</th>
-                <th>Maximum</th>
-                <th>Median</th> 
-                <th>Minimum</th>
-                <th>90th Percentile</th>
-                <th>95th Percentile</th>
-              </tr>
-            </thead>
-            
             <% function checkFailed(metric, valName) {
-                if(!metric.thresholds) return ''
-                for(thres in metric.thresholds) {
-                  if(thres.includes(valName)) {
-                    if(!metric.thresholds[thres].ok) return 'failed'
-                    return 'good'
-                  }
-                }
-              }
-
-              for(metricName of standardMetrics) { 
-                if(!data.metrics[metricName]) { continue }
-                var metric = data.metrics[metricName] 
+                 if(!metric.thresholds) return '';
+                 for(thres in metric.thresholds) {
+                   if(thres.includes(valName)) {
+                     if(!metric.thresholds[thres].ok) return 'failed';
+                     return 'good';
+                   }
+                 }
+               }
+               for(metricName of standardMetrics) { 
+                 if(!data.metrics[metricName]) { continue; }
+                 var metric = data.metrics[metricName]; 
             %>
               <tr>
                 <td><b><%= metricName %></b></td>
-
                 <% if(metric.values.count) { %>
                   <td class="<%= checkFailed(metric, 'count') %>"><%= metric.values.count.toFixed(2) %></td>
-                <% } else { %>
-                  <td>-</td>
-                <% } %>
-
+                <% } else { %><td>-</td><% } %>
                 <% if(metric.values.rate) { %>
                   <td class="<%= checkFailed(metric, 'rate') %>"><%= metric.values.rate.toFixed(2) %></td>
-                <% } else { %>
-                  <td>-</td>
-                <% } %>
-                
+                <% } else { %><td>-</td><% } %>
                 <% if(metric.values.avg) { %>
                   <td class="<%= checkFailed(metric, 'avg') %>"><%= metric.values.avg.toFixed(2) %></td>
-                <% } else { %>
-                  <td>-</td>
-                <% } %>
-
+                <% } else { %><td>-</td><% } %>
                 <% if(metric.values.max) { %>
                   <td class="<%= checkFailed(metric, 'max') %>"><%= metric.values.max.toFixed(2) %></td>
-                <% } else { %>
-                  <td>-</td>
-                <% } %>  
-
+                <% } else { %><td>-</td><% } %>
                 <% if(metric.values.med) { %>
                   <td class="<%= checkFailed(metric, 'med') %>"><%= metric.values.med.toFixed(2) %></td>
-                <% } else { %>
-                  <td>-</td>
-                <% } %>  
-                
+                <% } else { %><td>-</td><% } %>
                 <% if(metric.values.min) { %>
                   <td class="<%= checkFailed(metric, 'min') %>"><%= metric.values.min.toFixed(2) %></td>
-                <% } else { %>
-                  <td>-</td>
-                <% } %>   
-                              
+                <% } else { %><td>-</td><% } %>  
                 <% if(metric.values['p(90)']) { %>
                   <td class="<%= checkFailed(metric, 'p(90)') %>"><%= metric.values['p(90)'].toFixed(2) %></td>
-                <% } else { %>
-                  <td>-</td>
-                <% } %>
-
+                <% } else { %><td>-</td><% } %>
                 <% if(metric.values['p(95)']) { %>
                   <td class="<%= checkFailed(metric, 'p(95)') %>"><%= metric.values['p(95)'].toFixed(2) %></td>
-                <% } else { %>
-                  <td>-</td> 
-                <% } %>
+                <% } else { %><td>-</td><% } %>
               </tr>
             <% } %>
           </tbody>
@@ -260,18 +145,18 @@
         <br>
 
         <% 
-          first = true 
-          var sortedMetrics = {}
+          // Custom Metrics 區塊
+          first = true;
+          var sortedMetrics = {};
           Object.keys(data.metrics).sort().forEach(function(k) {
-            sortedMetrics[k] = data.metrics[k]
+            sortedMetrics[k] = data.metrics[k];
           });
           for(metricName in sortedMetrics) {
-            if(standardMetrics.includes(metricName) || otherMetrics.includes(metricName)) { continue }
-            var metric = sortedMetrics[metricName] 
-        %>
-          <% if(first) { first = false %> <h2>Custom Metrics</h2> 
-          <table class="pure-table pure-table-striped">
-            <tbody>
+            if(standardMetrics.includes(metricName) || otherMetrics.includes(metricName)) { continue; }
+            var metric = sortedMetrics[metricName];
+            if(first) { first = false; %>
+            <h2>Custom Metrics</h2>
+            <table class="pure-table pure-table-striped">
               <thead>
                 <tr>
                   <th></th>
@@ -285,68 +170,47 @@
                   <th>95th Percentile</th>
                 </tr>
               </thead>
-              <% } %>
-              <tr>
-                <td><b><%= metricName %></b></td>
-
-                <% if(metric.values.count) { %>
-                  <td class="<%= checkFailed(metric, 'count') %>"><%= metric.values.count.toFixed(2) %></td>
-                <% } else { %>
-                  <td>-</td>
-                <% } %>
-
-                <% if(metric.values.rate) { %>
-                  <td class="<%= checkFailed(metric, 'rate') %>"><%= metric.values.rate.toFixed(2) %></td>
-                <% } else { %>
-                  <td>-</td>
-                <% } %>
-                
-                <% if(metric.values.avg) { %>
-                  <td class="<%= checkFailed(metric, 'avg') %>"><%= metric.values.avg.toFixed(2) %></td>
-                <% } else { %>
-                  <td>-</td>
-                <% } %>
-
-                <% if(metric.values.max) { %>
-                  <td class="<%= checkFailed(metric, 'max') %>"><%= metric.values.max.toFixed(2) %></td>
-                <% } else { %>
-                  <td>-</td>
-                <% } %>  
-
-                <% if(metric.values.med) { %>
-                  <td class="<%= checkFailed(metric, 'med') %>"><%= metric.values.med.toFixed(2) %></td>
-                <% } else { %>
-                  <td>-</td>
-                <% } %>  
-                
-                <% if(metric.values.min) { %>
-                  <td class="<%= checkFailed(metric, 'min') %>"><%= metric.values.min.toFixed(2) %></td>
-                <% } else { %>
-                  <td>-</td>
-                <% } %>   
-                              
-                <% if(metric.values['p(90)']) { %>
-                  <td class="<%= checkFailed(metric, 'p(90)') %>"><%= metric.values['p(90)'].toFixed(2) %></td>
-                <% } else { %>
-                  <td>-</td>
-                <% } %>
-
-                <% if(metric.values['p(95)']) { %>
-                  <td class="<%= checkFailed(metric, 'p(95)') %>"><%= metric.values['p(95)'].toFixed(2) %></td>
-                <% } else { %>
-                  <td>-</td> 
-                <% } %>
-              </tr>
-              <% } %>
-            </tbody>
-          </table>
-          <br>
-
+              <tbody>
+            <% } %>
+            <tr>
+              <td><b><%= metricName %></b></td>
+              <% if(metric.values.count) { %>
+                <td class="<%= checkFailed(metric, 'count') %>"><%= metric.values.count.toFixed(2) %></td>
+              <% } else { %><td>-</td><% } %>
+              <% if(metric.values.rate) { %>
+                <td class="<%= checkFailed(metric, 'rate') %>"><%= metric.values.rate.toFixed(2) %></td>
+              <% } else { %><td>-</td><% } %>
+              <% if(metric.values.avg) { %>
+                <td class="<%= checkFailed(metric, 'avg') %>"><%= metric.values.avg.toFixed(2) %></td>
+              <% } else { %><td>-</td><% } %>
+              <% if(metric.values.max) { %>
+                <td class="<%= checkFailed(metric, 'max') %>"><%= metric.values.max.toFixed(2) %></td>
+              <% } else { %><td>-</td><% } %>
+              <% if(metric.values.med) { %>
+                <td class="<%= checkFailed(metric, 'med') %>"><%= metric.values.med.toFixed(2) %></td>
+              <% } else { %><td>-</td><% } %>
+              <% if(metric.values.min) { %>
+                <td class="<%= checkFailed(metric, 'min') %>"><%= metric.values.min.toFixed(2) %></td>
+              <% } else { %><td>-</td><% } %>   
+              <% if(metric.values['p(90)']) { %>
+                <td class="<%= checkFailed(metric, 'p(90)') %>"><%= metric.values['p(90)'].toFixed(2) %></td>
+              <% } else { %><td>-</td><% } %>
+              <% if(metric.values['p(95)']) { %>
+                <td class="<%= checkFailed(metric, 'p(95)') %>"><%= metric.values['p(95)'].toFixed(2) %></td>
+              <% } else { %><td>-</td><% } %>
+            </tr>
+          <% } %>
+          <% if (!first) { %>
+              </tbody>
+            </table>
+            <br>
+          <% } %>
 
         &nbsp;&nbsp; Note. All times are in milli-seconds
       </div> 
       <!-- ---- end tab ---- -->
 
+      <!-- Tab 2: Other Stats -->
       <input type="radio" name="tabs" id="tabtwo">
       <label for="tabtwo"><i class="fas fa-chart-line"></i> &nbsp; Other Stats</label>
       <div class="tab">
@@ -410,17 +274,15 @@
           <h2>&bull; Group - <%= group.name %></h2>
           <table class="pure-table pure-table-horizontal" style="width: 100%">
             <thead>
-              <tr>
-                <th>Check Name</th>
-                <th>Passes</th>
-                <th>Failures</th>
-              </tr>
+              <tr><th>Check Name</th><th>Passes</th><th>Failures</th></tr>
             </thead>
-            <% for(check of group.checks) { %>
-              <tr class="checkDetails <% if(check.fails > 0) { %>failed<% } %>">
-                <td width="50%"><%= check.name %></td><td><%= check.passes %></td><td><%= check.fails %></td>
-              </tr>
-            <% } %>
+            <tbody>
+              <% for(check of group.checks) { %>
+                <tr class="checkDetails <% if(check.fails > 0) { %>failed<% } %>">
+                  <td width="50%"><%= check.name %></td><td><%= check.passes %></td><td><%= check.fails %></td>
+                </tr>
+              <% } %>
+            </tbody>
           </table>
           <br>
         <% } %>
@@ -428,17 +290,15 @@
         <h2>&bull; Other Checks</h2>
         <table class="pure-table pure-table-horizontal" style="width: 100%">
           <thead>
-            <tr>
-              <th>Check Name</th>
-              <th>Passes</th>
-              <th>Failures</th>
-            </tr>
+            <tr><th>Check Name</th><th>Passes</th><th>Failures</th></tr>
           </thead>
-          <% for(check of data.root_group.checks) { %>
-            <tr class="checkDetails <% if(check.fails > 0) { %>failed<% } %>">
-              <td width="50%"><%= check.name %></td><td><%= check.passes %></td><td><%= check.fails %></td>
-            </tr>
-          <% } %>
+          <tbody>
+            <% for(check of data.root_group.checks) { %>
+              <tr class="checkDetails <% if(check.fails > 0) { %>failed<% } %>">
+                <td width="50%"><%= check.name %></td><td><%= check.passes %></td><td><%= check.fails %></td>
+              </tr>
+            <% } %>
+          </tbody>
         </table>     
       </div> 
       <!-- ---- end tab ---- -->
