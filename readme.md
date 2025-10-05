@@ -76,6 +76,6 @@ export function handleSummary(data) {
 
 # Screenshots
 
-![main report screenshot](https://user-images.githubusercontent.com/14982936/111346520-32b64100-8676-11eb-9b35-df32ef1982b1.png)
+![main report screenshot](./assets/2025-10-05%2023%2034%2021.png)
 
-![another report screenshot](https://user-images.githubusercontent.com/14982936/111085882-5d3ab980-8511-11eb-819d-d283bd03dc88.png)
+![another report screenshot](./assets/2025-10-05%2023%2036%2004.png)
