@@ -20,12 +20,13 @@ To use, add this module to your test code.
 Import the `htmlReport` function from the bundled module hosted remotely on GitHub
 
 ```js
-import { htmlReport } from 'https://raw.githubusercontent.com/benc-uk/k6-reporter/main/dist/bundle.js'
+import { htmlReport } from 'https://raw.githubusercontent.com/benc-uk/k6-reporter/latest/dist/bundle.js'
 ```
 
-> Note. Replace `main` with a version tag (e.g. `3.0.0`) to pin to a specific version
+- Replace `latest` with a version tag (e.g. `3.0.0`) to pin to a specific version, see [releases](https://github.com/benc-uk/k6-reporter/releases/) for available versions
+- Or use `main` to always get the latest code on the main branch (not recommended for production use)
 
-Then outside the test's default function, wrap it with the `handleSummary(data)` function which [K6 calls at the end of any test](https://grafana.com/docs/k6/latest/results-output/end-of-test/custom-summary/), as follows:
+Then outside the test default function, wrap it with the `handleSummary(data)` function which [K6 calls at the end of any test](https://grafana.com/docs/k6/latest/results-output/end-of-test/custom-summary/), as follows:
 
 ```js
 export function handleSummary(data) {
