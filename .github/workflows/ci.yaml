@@ -2,19 +2,19 @@ name: CI Checks & Build
 
 on:
   push:
-    branches: ["main"]
+    branches: ['main']
   pull_request:
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    name: "CI Build"
+    name: 'CI Build'
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v5
 
       - name: NPM Install
-        run: npm install --silent
+        run: npm ci
 
       - name: Lint Check
         run: npm run lint
@@ -22,18 +22,5 @@ jobs:
       - name: Bundle
         run: npm run build
 
-      - name: Add dist bundle
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        run: |
-          git config --local user.email "benc.uk@gmail.com"
-          git config --local user.name "GitHub Actions"
-          git add --force dist
-          git commit -m "CI automation $(date)"
-
-      - name: Push changes
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: main
-          force: true
+      # Commit all changed files back to the repository
+      - uses: stefanzweifel/git-auto-commit-action@v6
