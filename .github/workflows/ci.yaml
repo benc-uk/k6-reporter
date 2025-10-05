@@ -26,3 +26,5 @@ jobs:
 
       # Commit all changed files back to the repository
       - uses: stefanzweifel/git-auto-commit-action@v6
+        with:
+          commit_message: 'Automated commit of CI build distribution bundle'
