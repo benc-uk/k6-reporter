@@ -53,7 +53,7 @@ The **htmlReport** function accepts an optional options object/map as a second p
 Version 3 introduced themes support for styling the look of the output. There are now several themes to choose from:
 
 - The `default` theme was revised in v3 to be modern and cleaner, you can thank AI Claude Sonnet for the design work! It's also smarter in what values and columns it shows and is generally the best choice.
-- The `classic` theme is the original theme, and is still available if you prefer the chunky as hell old style.
+- The `classic` theme is the original theme, and is still available if you prefer the chunky old style.
 - The `bootstrap` theme uses vanilla [Bootstrap 5](https://getbootstrap.com/) for styling and layout.
 - You can also use [Bootswatch](https://bootswatch.com/) themes for a different look and feel. To use a Bootswatch theme, set the theme option to `bootswatch:<name>`, where `<name>` is one of the available Bootswatch themes, e.g. `cerulean`, `cyborg`, `darkly`, etc. If no name is provided, it will default to `cerulean`.
 
