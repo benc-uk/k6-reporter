@@ -101,7 +101,6 @@ export function htmlReport(data, opts = {}) {
     'data_received',
     'vus_max',
     'vus',
-    'http_req_failed',
     'http_req_duration{expected_response:true}',
   ]
 
@@ -117,14 +116,21 @@ export function htmlReport(data, opts = {}) {
   console.log(gaugeMetrics)
 
   const checkThres = (metric, valName) => {
-    if (!metric.thresholds) return ''
+    if (!metric.thresholds) {
+      return ''
+    }
+
     for (const thres in metric.thresholds) {
       if (thres.includes(valName)) {
         const isOK = metric.thresholds[thres].ok ?? true
-        if (!isOK) return 'failed'
+        if (!isOK) {
+          return 'failed'
+        }
         return 'good'
       }
     }
+
+    return ''
   }
 
   // Render the template
