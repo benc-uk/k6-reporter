@@ -1,13 +1,14 @@
 //
 // Generate HTML report from K6 summary data
 // Ben Coleman, March 2021
+// Updated: October 2025
 //
 
 // Have to import ejs this way, nothing else works
 import ejs from '../node_modules/ejs/ejs.min.js'
 import template from './template.ejs'
 
-const version = '2.3.0'
+const version = __VERSION__
 
 //
 // Main function should be imported and wrapped with the function handleSummary
@@ -15,7 +16,7 @@ const version = '2.3.0'
 export function htmlReport(data, opts = {}) {
   // Default options
   if (!opts.title) {
-    opts.title = new Date().toISOString().slice(0, 16).replace('T', ' ')
+    opts.title = `K6 Test Report: ${new Date().toISOString().slice(0, 16).replace('T', ' ')}`
   }
   // eslint-disable-next-line
   if (!opts.hasOwnProperty('debug')) {
@@ -61,7 +62,7 @@ export function htmlReport(data, opts = {}) {
     }
   }
 
-  countChecksInGroup(data.root_group);
+  countChecksInGroup(data.root_group)
 
   const standardMetrics = [
     'grpc_req_duration',
