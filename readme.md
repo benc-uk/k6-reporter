@@ -9,7 +9,6 @@ Any checks or thresolds defined in your test will be highlighted, with clear ind
 ![](https://img.shields.io/github/license/benc-uk/k6-reporter)
 ![](https://img.shields.io/github/last-commit/benc-uk/k6-reporter)
 ![](https://img.shields.io/github/release/benc-uk/k6-reporter)
-![](https://img.shields.io/github/checks-status/benc-uk/k6-reporter/main)
 
 # Basic Usage
 
@@ -56,6 +55,8 @@ Version 3 introduced themes support for styling the look of the output. There ar
 - The `classic` theme is the original theme, and is still available if you prefer the chunky old style.
 - The `bootstrap` theme uses vanilla [Bootstrap 5](https://getbootstrap.com/) for styling and layout.
 - You can also use [Bootswatch](https://bootswatch.com/) themes for a different look and feel. To use a Bootswatch theme, set the theme option to `bootswatch:<name>`, where `<name>` is one of the available Bootswatch themes, e.g. `cerulean`, `cyborg`, `darkly`, etc. If no name is provided, it will default to `cerulean`.
+
+> NOTE: ALl themes other than `default` are considered legacy and will not be supported or get new features in future releases. They are provided for backwards compatibility only.
 
 ## Multiple outputs
 
