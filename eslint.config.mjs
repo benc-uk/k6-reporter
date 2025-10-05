@@ -8,6 +8,7 @@ export default [
       globals: {
         __VERSION__: 'readonly',
         console: 'readonly',
+        process: 'readonly',
       },
       ecmaVersion: 2022,
       sourceType: 'module',

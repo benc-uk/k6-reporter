@@ -5,4 +5,4 @@ reports/*
 node_modules/
 tests/*.json
 tests/*.html
-!tests/test-data*.json
+!tests/data/*.json
