@@ -1,8 +1,10 @@
 # K6 HTML Summary Report
 
-K6 HTML Summary Report is a plugin extension that transforms [k6](https://k6.io/) test results into HTML reports. This helps visualize load test metrics in an easy-to-read format, enabling better analysis and sharing of performance test results. Simply import the module into your k6 test scripts to generate comprehensive HTML reports with charts and tables showing response times, request rates, and other critical performance indicators.
+K6 HTML Summary Report is a plugin extension that transforms [k6](https://k6.io/) test results into HTML reports.
 
-Any HTTP metrics which have exceeded thresholds will be highlighted in red. Any group checks with more than 0 failures will also be shown in red.
+This helps visualize load test results in an easy-to-read format, enabling better analysis and sharing of performance test results. Simply import the module into your k6 test scripts to generate comprehensive HTML reports with charts and tables showing response times, request rates, and other critical performance indicators.
+
+Any checks or thresolds defined in your test will be highlighted, with clear indication of pass/fail status.
 
 ![](https://img.shields.io/github/license/benc-uk/k6-reporter)
 ![](https://img.shields.io/github/last-commit/benc-uk/k6-reporter)
@@ -21,9 +23,9 @@ Import the `htmlReport` function from the bundled module hosted remotely on GitH
 import { htmlReport } from 'https://raw.githubusercontent.com/benc-uk/k6-reporter/main/dist/bundle.js'
 ```
 
-> Note. Replace `main` with a version tag (e.g. `3.0.0`) to use a specific version
+> Note. Replace `main` with a version tag (e.g. `3.0.0`) to pin to a specific version
 
-Then outside the test's default function, wrap it with the `handleSummary(data)` function which [K6 calls at the end of any test](https://github.com/loadimpact/k6/pull/1768), as follows:
+Then outside the test's default function, wrap it with the `handleSummary(data)` function which [K6 calls at the end of any test](https://grafana.com/docs/k6/latest/results-output/end-of-test/custom-summary/), as follows:
 
 ```js
 export function handleSummary(data) {
@@ -40,18 +42,18 @@ The key used in the returned object is the filename that will be written to, and
 
 The **htmlReport** function accepts an optional options object/map as a second parameter, with the following properties
 
-| Property | Type    | Default                   | Description                                                                |
-| -------- | ------- | ------------------------- | -------------------------------------------------------------------------- |
-| theme    | string  | 'default'                 | The theme to use for the report. See below                                 |
-| title    | string  | 'K6 Test Report \<date\>' | The title to use for the HTML report                                       |
-| debug    | boolean | false                     | If true, will output the raw JSON data input, you probably never need this |
+| Property | Type    | Default                   | Description                                                                     |
+| -------- | ------- | ------------------------- | ------------------------------------------------------------------------------- |
+| theme    | string  | 'default'                 | The theme to use for the report. See below                                      |
+| title    | string  | 'K6 Test Report \<date\>' | The title to use for the report                                                 |
+| debug    | boolean | false                     | If true, will output the raw JSON data input, you probably will never need this |
 
 ## Themes
 
-Version 3 introduced themes for the HTML report. There are now several themes to choose from:
+Version 3 introduced themes support for styling the look of the output. There are now several themes to choose from:
 
-- The `default` theme was revised in v3 to be a more little less cluttered and more modern looking. It is now the default theme.
-- The `classic` theme is the original theme, and is still available if you prefer the old style.
+- The `default` theme was revised in v3 to be modern and cleaner, you can thank AI Claude Sonnet for the design work! It's also smarter in what values and columns it shows and is generally the best choice.
+- The `classic` theme is the original theme, and is still available if you prefer the chunky as hell old style.
 - The `bootstrap` theme uses vanilla [Bootstrap 5](https://getbootstrap.com/) for styling and layout.
 - You can also use [Bootswatch](https://bootswatch.com/) themes for a different look and feel. To use a Bootswatch theme, set the theme option to `bootswatch:<name>`, where `<name>` is one of the available Bootswatch themes, e.g. `cerulean`, `cyborg`, `darkly`, etc. If no name is provided, it will default to `cerulean`.
 

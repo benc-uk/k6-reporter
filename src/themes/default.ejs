@@ -457,17 +457,13 @@
         }
       }
     </style>
-    <script>
-      function groupHeaderClickHandler(e) {
+    <script> 
+      function tabClickHandler(e) {
         let elemSubGroup = e.target.nextElementSibling;
-        if (!elemSubGroup) {
-          return;
-        }
+        if (!elemSubGroup) return;
+        
         let display = elemSubGroup.style.display;
         elemSubGroup.style.display = !display || display === "block" ? "none" : "block";
-        
-        // Rotate arrow
-        e.target.style.transform = display === "none" ? "rotate(0deg)" : "rotate(-90deg)";
       }
     </script>
   </head>
@@ -513,14 +509,15 @@
             <div class="metric-value"><%= checkFailures %></div>
           </div>
         </div>
+
         <!-- Tabs Section -->
         <div class="tabs">
           <input type="radio" name="tabs" id="tabone" checked="checked">
-          <label for="tabone"><i class="far fa-clock"></i> Request Metrics</label>
+          <label for="tabone"><i class="fas fa-microscope"></i> Detailed Metrics</label>
           <div class="tab">
 
         <% if(trendMetrics.length > 0) { %>
-        <h4>&bull; Trends & Times</h4>
+        <h4><i class="fas fa-chart-line"></i> Trends & Times</h4>
         <table class="pure-table pure-table-striped">
           <thead>
             <tr>
@@ -551,7 +548,7 @@
         <% } %>
 
         <% if(rateMetrics.length > 0) { %>
-        <h4>&bull; Rates</h4>
+        <h4><i class="fas fa-percent"></i> Rates</h4>
         <table class="pure-table pure-table-striped">
           <thead>
             <tr>
@@ -584,7 +581,7 @@
         <% } %>
 
         <% if(counterMetrics.length > 0) { %>
-        <h4>&bull; Counters</h4>
+        <h4><i class="fas fa-calculator"></i> Counters</h4>
         <table class="pure-table pure-table-striped">
           <thead>
             <tr>
@@ -613,13 +610,44 @@
         </table>
         <% } %>
 
+        <% if(gaugeMetrics.length > 0) { %>
+        <h4><i class="fas fa-tachometer-alt"></i> Gauges</h4>
+        <table class="pure-table pure-table-striped">
+          <thead>
+            <tr>
+              <th></th>
+              <th>Value</th> 
+              <th>Min</th>
+              <th>Max</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% for (metric of gaugeMetrics) { 
+                if (otherMetrics.includes(metric)) continue;
+                let metricData = data.metrics[metric];
+                if (!metricData) continue;
+            %>
+              <tr>
+                <td><b><%= metric %></b></td>
+                <% for (statName of ['value', 'min', 'max']) {
+                     let val = metricData.values[statName];
+                     if (val === undefined) { val = 'n/a'; }
+                     else { val = val.toFixed(2); }
+                %>
+                  <td class="<%= checkThres(metricData, statName) %>"><%= val %></td>
+                <% } %> 
+              </tr>
+            <% } %>
+          </tbody>
+        </table>
+        <% } %>
       
           </div> 
 
           <!-- ---- end tab ---- -->
 
           <input type="radio" name="tabs" id="tabtwo">
-          <label for="tabtwo"><i class="fas fa-chart-line"></i> Other Stats</label>
+          <label for="tabtwo"><i class="fas fa-chart-pie"></i> Test Run Details</label>
           <div class="tab">
             <div class="stats-grid">
               <% if (data.metrics.checks) { %>
@@ -714,10 +742,10 @@
           <!-- ---- end tab ---- -->     
 
           <input type="radio" name="tabs" id="tabthree">
-          <label for="tabthree"><i class="fas fa-tasks"></i> Checks & Groups</label>
+          <label for="tabthree"><i class="fas fa-square-check"></i> Checks & Groups</label>
           <div class="tab">
             <% function renderGroup(group) { %>
-              <h2 class="group-header" onclick="groupHeaderClickHandler(event)">Group - <%= group.name %></h2>
+              <h2 class="group-header" onclick="tabClickHandler(event)">Group - <%= group.name %></h2>
               <div>
                 <% if(group.checks.length > 0) { %>
                   <table>

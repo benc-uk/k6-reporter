@@ -15,7 +15,7 @@ const version = __VERSION__
 //
 export function htmlReport(data, opts = {}) {
   // Default options
-  opts.title = opts.title || `K6 Test Report: ${new Date().toISOString().slice(0, 16).replace('T', ' ')}`
+  opts.title = opts.title || `Test Report: ${new Date().toISOString().slice(0, 16).replace('T', ' ')}`
   opts.debug = opts.debug || false
   opts.theme = opts.theme || 'default'
 
@@ -97,7 +97,6 @@ export function htmlReport(data, opts = {}) {
     'data_sent',
     'checks',
     'http_reqs',
-    'grpc_reqs',
     'data_received',
     'vus_max',
     'vus',
