@@ -3,9 +3,9 @@
 // Ben Coleman, March 2021, October 2025
 //
 
-// Have to import ejs this way, nothing else works
-import ejs from '../node_modules/ejs/ejs.min.js'
-import template from './template.ejs'
+import ejs from 'ejs/ejs.min.js'
+import classicTemplate from './themes/classic.ejs'
+import bootstrapTemplate from './themes/bootstrap.ejs'
 
 const version = __VERSION__
 
@@ -14,12 +14,18 @@ const version = __VERSION__
 //
 export function htmlReport(data, opts = {}) {
   // Default options
-  if (!opts.title) {
-    opts.title = `K6 Test Report: ${new Date().toISOString().slice(0, 16).replace('T', ' ')}`
-  }
-  // eslint-disable-next-line
-  if (!opts.hasOwnProperty('debug')) {
-    opts.debug = false
+  opts.title = opts.title || `K6 Test Report: ${new Date().toISOString().slice(0, 16).replace('T', ' ')}`
+  opts.debug = opts.debug || false
+  opts.theme = opts.theme || 'classic'
+
+  let template = ''
+  switch (opts.theme) {
+    case 'bootstrap':
+      template = bootstrapTemplate
+      break
+    case 'classic':
+    default:
+      template = classicTemplate
   }
 
   console.log(`[k6-reporter v${version}] Generating HTML summary report`)
@@ -110,7 +116,7 @@ export function htmlReport(data, opts = {}) {
   })
 
   // Return HTML string needs wrapping in a handleSummary result object
-  // See https://k6.io/docs/results-visualization/end-of-test-summary#handlesummary-callback
+  // See https://grafana.com/docs/k6/latest/results-output/end-of-test/custom-summary/#syntax
   return html
 }
 

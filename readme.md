@@ -1,6 +1,6 @@
-# K6 HTML Report Exporter v3
+# K6 HTML Summary Report
 
-K6 HTML Report Exporter is a utility that transforms [k6](https://k6.io/) test results into HTML reports. This extension helps visualize load test metrics in an easy-to-read format, enabling better analysis and sharing of performance test results. Simply import the module into your k6 test scripts to generate comprehensive HTML reports with charts and tables showing response times, request rates, and other critical performance indicators.
+K6 HTML Summary Report is a plugin extension that transforms [k6](https://k6.io/) test results into HTML reports. This helps visualize load test metrics in an easy-to-read format, enabling better analysis and sharing of performance test results. Simply import the module into your k6 test scripts to generate comprehensive HTML reports with charts and tables showing response times, request rates, and other critical performance indicators.
 
 Any HTTP metrics which have exceeded thresholds will be highlighted in red. Any group checks with more than 0 failures will also be shown in red.
 

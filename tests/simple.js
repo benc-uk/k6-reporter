@@ -17,7 +17,7 @@ const SLEEP = __ENV.SLEEP || 0.5
 
 export function handleSummary(data) {
   return {
-    'summary.html': htmlReport(data, { debug: false }),
+    'summary.html': htmlReport(data, { theme: 'bootstrap', title: 'My Test Report' }),
     stdout: textSummary(data, { indent: ' ', enableColors: true }),
   }
 }

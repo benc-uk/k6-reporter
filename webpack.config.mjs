@@ -1,11 +1,15 @@
-const { CleanWebpackPlugin } = require('clean-webpack-plugin')
-const webpack = require('webpack')
-const path = require('path')
-const packageJson = require('./package.json')
+import webpack from 'webpack'
+import path from 'path'
+import { readFileSync } from 'fs'
+import { fileURLToPath } from 'url'
+import { CleanWebpackPlugin } from 'clean-webpack-plugin'
 
-module.exports = {
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
+const packageJson = JSON.parse(readFileSync(path.join(__dirname, 'package.json'), 'utf-8'))
+
+export default {
   mode: 'production',
-  entry: './src/html-report.js',
+  entry: './src/report.js',
   output: {
     filename: 'bundle.js',
     path: path.resolve(process.cwd(), 'dist'),

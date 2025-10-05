@@ -4,11 +4,13 @@
   "description": "Export K6 test summary as a HTML report",
   "author": "Ben Coleman",
   "license": "MIT",
+  "type": "module",
   "homepage": "https://github.com/benc-uk/k6-reporter",
   "scripts": {
     "build": "webpack",
     "lint": "eslint src && prettier --check src",
-    "lint-fix": "eslint src --fix && prettier --write src"
+    "lint-fix": "eslint src --fix && prettier --write src",
+    "test": "npm run build && k6 run tests/simple.js"
   },
   "devDependencies": {
     "@eslint/js": "^9.37.0",
