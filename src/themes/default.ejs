@@ -12,6 +12,7 @@
     <style>
       body {
         margin: 1rem;
+        background-color: #ddd;
       }
       footer { 
         float: right;
@@ -34,6 +35,9 @@
       h2 {
         padding-bottom: 4px;
         border-bottom: solid 3px #cccccc;
+      }
+      h4 {
+        font-size: 1.5rem;
       }
       .tabs {
         display: flex;
@@ -106,7 +110,7 @@
       }
       .bignum {
         position: relative;
-        font-size: min(6vw, 80px);
+        font-size: min(3vw, 40px);
         z-index: 20;
       }
       table {
@@ -188,176 +192,105 @@
       <input type="radio" name="tabs" id="tabone" checked="checked">
       <label for="tabone"><i class="far fa-clock"></i> &nbsp; Request Metrics</label>
       <div class="tab">
-        <table class="pure-table pure-table-striped">
-          <tbody>
-            <thead>
-              <tr>
-                <th></th>
-                <th>Average</th>
-                <th>Maximum</th>
-                <th>Median</th> 
-                <th>Minimum</th>
-                <th>90th Percentile</th>
-                <th>95th Percentile</th>
-                <th>99th Percentile</th>
-              </tr>
-            </thead>
-            
-            <% function checkFailed(metric, valName) {
-                if(!metric.thresholds) return ''
-                for(thres in metric.thresholds) {
-                  if(thres.includes(valName)) {
-                    if(!metric.thresholds[thres].ok) return 'failed'
-                    return 'good'
-                  }
-                }
-              }
 
-              for(metricName of standardMetrics) { 
-                if(!data.metrics[metricName]) { continue }
-                var metric = data.metrics[metricName] 
+        <% if(trendMetrics.length > 0) { %>
+        <h4>Trends & Times</h4>
+        <table class="pure-table pure-table-striped">
+          <thead>
+            <tr>
+              <th></th>
+              <% for (statName of data.options.summaryTrendStats) { %>
+                <th><%= statName.charAt(0).toUpperCase() + statName.slice(1) %></th>
+              <% } %> 
+            </tr>
+          </thead>
+          <tbody>
+            <% for (metric of trendMetrics) { 
+                let metricData = data.metrics[metric];
+                if (!metricData) continue;
             %>
               <tr>
-                <td><b><%= metricName %></b></td>
-                
-                <% if(metric.values.avg) { %>
-                  <td class="<%= checkFailed(metric, 'avg') %>"><%= metric.values.avg.toFixed(2) %></td>
-                <% } else { %>
-                  <td>-</td>
-                <% } %>
-
-                <% if(metric.values.max) { %>
-                  <td class="<%= checkFailed(metric, 'max') %>"><%= metric.values.max.toFixed(2) %></td>
-                <% } else { %>
-                  <td>-</td>
-                <% } %>  
-
-                <% if(metric.values.med) { %>
-                  <td class="<%= checkFailed(metric, 'med') %>"><%= metric.values.med.toFixed(2) %></td>
-                <% } else { %>
-                  <td>-</td>
-                <% } %>  
-                
-                <% if(metric.values.min) { %>
-                  <td class="<%= checkFailed(metric, 'min') %>"><%= metric.values.min.toFixed(2) %></td>
-                <% } else { %>
-                  <td>-</td>
-                <% } %>   
-                              
-                <% if(metric.values['p(90)']) { %>
-                  <td class="<%= checkFailed(metric, 'p(90)') %>"><%= metric.values['p(90)'].toFixed(2) %></td>
-                <% } else { %>
-                  <td>-</td>
-                <% } %>
-
-                <% if(metric.values['p(95)']) { %>
-                  <td class="<%= checkFailed(metric, 'p(95)') %>"><%= metric.values['p(95)'].toFixed(2) %></td>
-                <% } else { %>
-                  <td>-</td> 
-                <% } %>
-
-                <% if(metric.values['p(99)']) { %>
-                  <td class="<%= checkFailed(metric, 'p(99)') %>"><%= metric.values['p(99)'].toFixed(2) %></td>
-                <% } else { %>
-                  <td>-</td> 
-                <% } %>
+                <td><b><%= metric %></b></td>
+                <% for (statName of data.options.summaryTrendStats) {
+                     let val = metricData.values[statName];
+                     if (val === undefined) { val = 'n/a'; }
+                     else { val = val.toFixed(2); }
+                %>
+                  <td class="<%= checkThres(metricData, statName) %>"><%= val %></td>
+                <% } %> 
               </tr>
             <% } %>
           </tbody>
         </table>
-        <br>
+        <% } else { %>
+          <h4>No Trend Metrics Found</h4>
+          <p>Make sure you are collecting trend metrics in your k6 script. See <a href="https://k6.io/docs/using-k6/metrics/#trend-metrics" target="_blank">k6 Trend Metrics Docs</a> for more information.</p>
+        <% } %>
 
-        <% 
-          first = true 
-          var sortedMetrics = {}
-          Object.keys(data.metrics).sort().forEach(function(k) {
-            sortedMetrics[k] = data.metrics[k]
-          });
-          for(metricName in sortedMetrics) {
-            if(standardMetrics.includes(metricName) || otherMetrics.includes(metricName)) { continue }
-            var metric = sortedMetrics[metricName] 
-        %>
-          <% if(first) { first = false %> <h2>Custom Metrics</h2> 
-          <table class="pure-table pure-table-striped">
-            <tbody>
-              <thead>
-                <tr>
-                  <th></th>
-                  <th>Count</th>
-                  <th>Rate</th>
-                  <th>Average</th>
-                  <th>Maximum</th>
-                  <th>Median</th> 
-                  <th>Minimum</th>
-                  <th>90th Percentile</th>
-                  <th>95th Percentile</th>
-                  <th>99th Percentile</th>
-                </tr>
-              </thead>
-              <% } %>
+        <% if(rateMetrics.length > 0) { %>
+        <h4>Rates</h4>
+        <table class="pure-table pure-table-striped">
+          <thead>
+            <tr>
+              <th></th>
+              <th>Rate</th> 
+              <th>Passes</th>
+              <th>Fails</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% for (metric of rateMetrics) { 
+                if (otherMetrics.includes(metric)) continue;
+                let metricData = data.metrics[metric];
+                if (!metricData) continue;
+            %>
               <tr>
-                <td><b><%= metricName %></b></td>
-
-                <% if(metric.values.count) { %>
-                  <td class="<%= checkFailed(metric, 'count') %>"><%= metric.values.count.toFixed(2) %></td>
-                <% } else { %>
-                  <td>-</td>
-                <% } %>
-
-                <% if(metric.values.rate) { %>
-                  <td class="<%= checkFailed(metric, 'rate') %>"><%= metric.values.rate.toFixed(2) %></td>
-                <% } else { %>
-                  <td>-</td>
-                <% } %>
-                
-                <% if(metric.values.avg) { %>
-                  <td class="<%= checkFailed(metric, 'avg') %>"><%= metric.values.avg.toFixed(2) %></td>
-                <% } else { %>
-                  <td>-</td>
-                <% } %>
-
-                <% if(metric.values.max) { %>
-                  <td class="<%= checkFailed(metric, 'max') %>"><%= metric.values.max.toFixed(2) %></td>
-                <% } else { %>
-                  <td>-</td>
-                <% } %>  
-
-                <% if(metric.values.med) { %>
-                  <td class="<%= checkFailed(metric, 'med') %>"><%= metric.values.med.toFixed(2) %></td>
-                <% } else { %>
-                  <td>-</td>
-                <% } %>  
-                
-                <% if(metric.values.min) { %>
-                  <td class="<%= checkFailed(metric, 'min') %>"><%= metric.values.min.toFixed(2) %></td>
-                <% } else { %>
-                  <td>-</td>
-                <% } %>   
-                              
-                <% if(metric.values['p(90)']) { %>
-                  <td class="<%= checkFailed(metric, 'p(90)') %>"><%= metric.values['p(90)'].toFixed(2) %></td>
-                <% } else { %>
-                  <td>-</td>
-                <% } %>
-
-                <% if(metric.values['p(95)']) { %>
-                  <td class="<%= checkFailed(metric, 'p(95)') %>"><%= metric.values['p(95)'].toFixed(2) %></td>
-                <% } else { %>
-                  <td>-</td> 
-                <% } %>
-
-                <% if(metric.values['p(99)']) { %>
-                  <td class="<%= checkFailed(metric, 'p(99)') %>"><%= metric.values['p(99)'].toFixed(2) %></td>
-                <% } else { %>
-                  <td>-</td> 
-                <% } %>
+                <td><b><%= metric %></b></td>
+                <% for (statName of ['rate', 'passes', 'fails']) {
+                     let val = metricData.values[statName];
+                     if (val === undefined) { val = 'n/a'; }
+                     else { val = val.toFixed(2); }
+                %>
+                  <td class="<%= checkThres(metricData, statName) %>"><%= val %></td>
+                <% } %> 
+  
               </tr>
-              <% } %>
-            </tbody>
-          </table>
-          <br>
+            <% } %>
+          </tbody>
+        </table>
+        <% } %>
 
+        <% if(counterMetrics.length > 0) { %>
+        <h4>Counters</h4>
+        <table class="pure-table pure-table-striped">
+          <thead>
+            <tr>
+              <th></th>
+              <th>Count</th> 
+            </tr>
+          </thead>
+          <tbody>
+            <% for (metric of counterMetrics) { 
+                if (otherMetrics.includes(metric)) continue;
+                let metricData = data.metrics[metric];
+                if (!metricData) continue;
+            %>
+              <tr>
+                <td><b><%= metric %></b></td>
+                <% for (statName of ['count']) {
+                     let val = metricData.values[statName];
+                     if (val === undefined) { val = 'n/a'; }
+                     else { val = val.toFixed(2); }
+                %>
+                  <td class="<%= checkThres(metricData, statName) %>"><%= val %></td>
+                <% } %> 
+              </tr>
+            <% } %>
+          </tbody>
+        </table>
+        <% } %>
 
+        <br>
         &nbsp;&nbsp; Note. All times are in milli-seconds
       </div> 
       <!-- ---- end tab ---- -->

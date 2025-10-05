@@ -9,7 +9,7 @@ Any HTTP metrics which have exceeded thresholds will be highlighted in red. Any 
 ![](https://img.shields.io/github/release/benc-uk/k6-reporter)
 ![](https://img.shields.io/github/checks-status/benc-uk/k6-reporter/main)
 
-# Usage
+# Basic Usage
 
 This extension to K6 is intended to be used by adding into your K6 test code (JavaScript) and utilizes the _handleSummary_ callback hook. When your test completes a HTML file will be written to the filesystem, containing a formatted and easy to consume version of the test summary data
 
@@ -36,11 +36,24 @@ export function handleSummary(data) {
 The key used in the returned object is the filename that will be written to, and can be any valid filename or path  
 **Note. This is a change in the v2.1.1 release**
 
-The **htmlReport** function accepts an optional options map as a second parameter, with the following properties
+## Options
 
-```ts
-title    string  // Title of the report, defaults to current date
-```
+The **htmlReport** function accepts an optional options object/map as a second parameter, with the following properties
+
+| Property | Type    | Default                   | Description                                                                |
+| -------- | ------- | ------------------------- | -------------------------------------------------------------------------- |
+| theme    | string  | 'default'                 | The theme to use for the report. See below                                 |
+| title    | string  | 'K6 Test Report \<date\>' | The title to use for the HTML report                                       |
+| debug    | boolean | false                     | If true, will output the raw JSON data input, you probably never need this |
+
+## Themes
+
+Version 3 introduced themes for the HTML report. There are now several themes to choose from:
+
+- The `default` theme was revised in v3 to be a more little less cluttered and more modern looking. It is now the default theme.
+- The `classic` theme is the original theme, and is still available if you prefer the old style.
+- The `bootstrap` theme uses vanilla [Bootstrap 5](https://getbootstrap.com/) for styling and layout.
+- You can also use [Bootswatch](https://bootswatch.com/) themes for a different look and feel. To use a Bootswatch theme, set the theme option to `bootswatch:<name>`, where `<name>` is one of the available Bootswatch themes, e.g. `cerulean`, `cyborg`, `darkly`, etc. If no name is provided, it will default to `cerulean`.
 
 ## Multiple outputs
 

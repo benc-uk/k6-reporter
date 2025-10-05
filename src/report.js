@@ -4,6 +4,7 @@
 //
 
 import ejs from 'ejs/ejs.min.js'
+import defaultTemplate from './themes/default.ejs'
 import classicTemplate from './themes/classic.ejs'
 import bootstrapTemplate from './themes/bootstrap.ejs'
 
@@ -16,19 +17,17 @@ export function htmlReport(data, opts = {}) {
   // Default options
   opts.title = opts.title || `K6 Test Report: ${new Date().toISOString().slice(0, 16).replace('T', ' ')}`
   opts.debug = opts.debug || false
-  opts.theme = opts.theme || 'classic'
+  opts.theme = opts.theme || 'default'
 
-  let template = ''
-  switch (opts.theme) {
-    case 'bootstrap':
-      template = bootstrapTemplate
-      break
-    case 'classic':
-    default:
-      template = classicTemplate
+  let template = defaultTemplate
+  if (opts.theme.startsWith('boot')) {
+    template = bootstrapTemplate
+  }
+  if (opts.theme === 'classic') {
+    template = classicTemplate
   }
 
-  console.log(`[k6-reporter v${version}] Generating HTML summary report`)
+  console.log(`[k6-reporter v${version}] Generating HTML summary report, with theme: ${opts.theme}`)
   const metricListSorted = []
 
   if (opts.debug) {
@@ -53,6 +52,8 @@ export function htmlReport(data, opts = {}) {
     }
   }
 
+  metricListSorted.sort()
+
   // Count the checks and those that have passed or failed
   let checkFailures = 0
   let checkPasses = 0
@@ -73,7 +74,8 @@ export function htmlReport(data, opts = {}) {
   // Start counting checks from the root group
   countChecksInGroup(data.root_group)
 
-  const standardMetrics = [
+  // Kept for backwards compatibility with older themes classic and bootstrap
+  const legacyStandardMetrics = [
     'grpc_req_duration',
     'http_req_duration',
     'http_req_waiting',
@@ -95,6 +97,7 @@ export function htmlReport(data, opts = {}) {
     'data_sent',
     'checks',
     'http_reqs',
+    'grpc_reqs',
     'data_received',
     'vus_max',
     'vus',
@@ -102,17 +105,46 @@ export function htmlReport(data, opts = {}) {
     'http_req_duration{expected_response:true}',
   ]
 
+  const trendStats = data.options.summaryTrendStats || []
+  const trendMetrics = metricListSorted.filter((m) => data.metrics[m].type === 'trend' && !otherMetrics.includes(m))
+  const rateMetrics = metricListSorted.filter((m) => data.metrics[m].type === 'rate' && !otherMetrics.includes(m))
+  const counterMetrics = metricListSorted.filter((m) => data.metrics[m].type === 'counter' && !otherMetrics.includes(m))
+  const gaugeMetrics = metricListSorted.filter((m) => data.metrics[m].type === 'gauge' && !otherMetrics.includes(m))
+
+  console.log(trendMetrics)
+  console.log(rateMetrics)
+  console.log(counterMetrics)
+  console.log(gaugeMetrics)
+
+  const checkThres = (metric, valName) => {
+    if (!metric.thresholds) return ''
+    for (const thres in metric.thresholds) {
+      if (thres.includes(valName)) {
+        const isOK = metric.thresholds[thres].ok ?? true
+        if (!isOK) return 'failed'
+        return 'good'
+      }
+    }
+  }
+
   // Render the template
   const html = ejs.render(template, {
     data,
     title: opts.title,
-    standardMetrics,
+    theme: opts.theme,
+    trendStats,
+    trendMetrics,
+    rateMetrics,
+    counterMetrics,
+    gaugeMetrics,
+    standardMetrics: legacyStandardMetrics,
     otherMetrics,
     thresholdFailures,
     thresholdCount,
     checkFailures,
     checkPasses,
     version,
+    checkThres,
   })
 
   // Return HTML string needs wrapping in a handleSummary result object

@@ -10,7 +10,8 @@
     "build": "webpack",
     "lint": "eslint src && prettier --check src",
     "lint-fix": "eslint src --fix && prettier --write src",
-    "test": "npm run build && k6 run tests/simple.js"
+    "test": "node src/test.js",
+    "k6-simple": "k6 run tests/simple.js"
   },
   "devDependencies": {
     "@eslint/js": "^9.37.0",

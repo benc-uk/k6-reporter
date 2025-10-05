@@ -10,14 +10,14 @@ import { htmlReport } from '../dist/bundle.js'
 import { textSummary } from 'https://jslib.k6.io/k6-summary/0.1.0/index.js'
 
 const TARGET_URL = __ENV.TEST_TARGET || 'https://benc.dev'
-const RAMP_TIME = __ENV.RAMP_TIME || '1s'
-const RUN_TIME = __ENV.RUN_TIME || '2s'
+const RAMP_TIME = __ENV.RAMP_TIME || '5s'
+const RUN_TIME = __ENV.RUN_TIME || '20s'
 const USER_COUNT = __ENV.USER_COUNT || 20
 const SLEEP = __ENV.SLEEP || 0.5
 
 export function handleSummary(data) {
   return {
-    'summary.html': htmlReport(data, { theme: 'bootstrap', title: 'My Test Report' }),
+    'summary.html': htmlReport(data, { title: 'Simple Load Test', debug: true }),
     stdout: textSummary(data, { indent: ' ', enableColors: true }),
   }
 }

@@ -10,10 +10,13 @@ const packageJson = JSON.parse(readFileSync(path.join(__dirname, 'package.json')
 export default {
   mode: 'production',
   entry: './src/report.js',
+  experiments: {
+    outputModule: true,
+  },
   output: {
     filename: 'bundle.js',
     path: path.resolve(process.cwd(), 'dist'),
-    libraryTarget: 'commonjs',
+    libraryTarget: 'module',
   },
 
   plugins: [

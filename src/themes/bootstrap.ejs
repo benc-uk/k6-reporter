@@ -4,7 +4,12 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <% if (theme.startsWith('bootswatch')) { %>
+  <% const themeName = theme.split(':')[1] || 'cerulean' %>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.8/<%=themeName%>/bootstrap.min.css" rel="stylesheet" />
+  <% } else { %>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+  <% } %>
   <link href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css" rel="stylesheet">
 
   <title><%= title %></title>
@@ -86,15 +91,15 @@
       <div class="col-md-12">
         <ul class="nav nav-tabs" id="myTab" role="tablist">
           <li class="nav-item mx-auto" role="presentation">
-            <button class="nav-link active text-black btn-block" id="request-metrics-tab" data-bs-toggle="tab" data-bs-target="#request-metrics"
+            <button class="nav-link active btn-block" id="request-metrics-tab" data-bs-toggle="tab" data-bs-target="#request-metrics"
               type="button" role="tab" aria-controls="request-metrics" aria-selected="true">Request Metrics</button>
           </li>
           <li class="nav-item mx-auto" role="presentation">
-            <button class="nav-link text-black btn-block" id="other-stats-tab" data-bs-toggle="tab" data-bs-target="#other-stats" type="button"
+            <button class="nav-link btn-block" id="other-stats-tab" data-bs-toggle="tab" data-bs-target="#other-stats" type="button"
               role="tab" aria-controls="other-stats" aria-selected="false">Other Stats</button>
           </li>
           <li class="nav-item mx-auto" role="presentation">
-            <button class="nav-link text-black btn-block" id="checks-and-group-tab" data-bs-toggle="tab" data-bs-target="#checks-and-groups"
+            <button class="nav-link btn-block" id="checks-and-group-tab" data-bs-toggle="tab" data-bs-target="#checks-and-groups"
               type="button" role="tab" aria-controls="checks-and-group" aria-selected="false">Checks & Groups</button>
           </li>
         </ul>
@@ -369,7 +374,7 @@
   <footer>
     <div class="row p-4 text-center">
       <div class="col-12">
-        <span class="text-muted">K6 Reporter v<%= version %> - Ben Coleman 2025, <a href="https://github.com/benc-uk/k6-reporter" class="text-black">[GitHub]</a> . Template designed by Khoerul Umam 2022 <a class="text-black" href="https://github.com/khumam">[GitHub]</a></span>
+        <span class="text-muted">K6 Reporter v<%= version %> - Ben Coleman 2025, <a href="https://github.com/benc-uk/k6-reporter" class="text-info">[GitHub]</a>. Template designed by Khoerul Umam 2022 <a class="text-info" href="https://github.com/khumam">[GitHub]</a></span>
       </div>
     </div>
   </footer>
