@@ -1,7 +1,6 @@
 //
 // Generate HTML report from K6 summary data
-// Ben Coleman, March 2021
-// Updated: October 2025
+// Ben Coleman, March 2021, October 2025
 //
 
 // Have to import ejs this way, nothing else works
@@ -24,7 +23,7 @@ export function htmlReport(data, opts = {}) {
   }
 
   console.log(`[k6-reporter v${version}] Generating HTML summary report`)
-  let metricListSorted = []
+  const metricListSorted = []
 
   if (opts.debug) {
     console.log(JSON.stringify(data, null, 2))
@@ -33,14 +32,16 @@ export function htmlReport(data, opts = {}) {
   // Count the thresholds and those that have failed
   let thresholdFailures = 0
   let thresholdCount = 0
-  for (let metricName in data.metrics) {
-    metricListSorted.push(metricName)
-    if (data.metrics[metricName].thresholds) {
-      thresholdCount++
-      let thresholds = data.metrics[metricName].thresholds
-      for (let thresName in thresholds) {
-        if (!thresholds[thresName].ok) {
-          thresholdFailures++
+  for (const metricName in data.metrics) {
+    if (Object.prototype.hasOwnProperty.call(data.metrics, metricName)) {
+      metricListSorted.push(metricName)
+      if (data.metrics[metricName].thresholds) {
+        thresholdCount++
+        const thresholds = data.metrics[metricName].thresholds
+        for (const thresName in thresholds) {
+          if (!thresholds[thresName].ok) {
+            thresholdFailures++
+          }
         }
       }
     }
@@ -52,16 +53,18 @@ export function htmlReport(data, opts = {}) {
 
   function countChecksInGroup(group) {
     if (group.checks) {
-      let { passes, fails } = countChecks(group.checks)
+      const { passes, fails } = countChecks(group.checks)
       checkFailures += fails
       checkPasses += passes
     }
+
     // Count the checks in nested groups
-    for (let subGroup of group.groups) {
+    for (const subGroup of group.groups) {
       countChecksInGroup(subGroup)
     }
   }
 
+  // Start counting checks from the root group
   countChecksInGroup(data.root_group)
 
   const standardMetrics = [
@@ -117,9 +120,9 @@ export function htmlReport(data, opts = {}) {
 function countChecks(checks) {
   let passes = 0
   let fails = 0
-  for (let check of checks) {
-    passes += parseInt(check.passes)
-    fails += parseInt(check.fails)
+  for (const check of checks) {
+    passes += parseInt(check.passes, 10)
+    fails += parseInt(check.fails, 10)
   }
   return { passes, fails }
 }

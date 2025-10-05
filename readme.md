@@ -1,12 +1,8 @@
-# K6 HTML Report Exporter v2
+# K6 HTML Report Exporter v3
 
-### 🔥 Note.
+K6 HTML Report Exporter is a utility that transforms [k6](https://k6.io/) test results into HTML reports. This extension helps visualize load test metrics in an easy-to-read format, enabling better analysis and sharing of performance test results. Simply import the module into your k6 test scripts to generate comprehensive HTML reports with charts and tables showing response times, request rates, and other critical performance indicators.
 
-> This a complete rewrite/overhaul of the existing report converter, now written in JavaScript to be integrated into the test. This is a more elegant method than the offline conversation process. The previous code has been moved to the 'archive' folder.
-
-The report will show all request groups, checks, HTTP metrics and other statistics
-
-Any HTTP metrics which have failed thresholds will be highlighted in red. Any group checks with more than 0 failures will also be shown in red.
+Any HTTP metrics which have exceeded thresholds will be highlighted in red. Any group checks with more than 0 failures will also be shown in red.
 
 ![](https://img.shields.io/github/license/benc-uk/k6-reporter)
 ![](https://img.shields.io/github/last-commit/benc-uk/k6-reporter)
@@ -15,25 +11,25 @@ Any HTTP metrics which have failed thresholds will be highlighted in red. Any gr
 
 # Usage
 
-This extension to K6 is intended to be used by adding into your K6 test code (JavaScript) and utilizes the _handleSummary_ callback hook, added to K6 v0.30.0. When your test completes a HTML file will be written to the filesystem, containing a formatted and easy to consume version of the test summary data
+This extension to K6 is intended to be used by adding into your K6 test code (JavaScript) and utilizes the _handleSummary_ callback hook. When your test completes a HTML file will be written to the filesystem, containing a formatted and easy to consume version of the test summary data
 
 To use, add this module to your test code.
 
 Import the `htmlReport` function from the bundled module hosted remotely on GitHub
 
 ```js
-import { htmlReport } from "https://raw.githubusercontent.com/benc-uk/k6-reporter/main/dist/bundle.js";
+import { htmlReport } from 'https://raw.githubusercontent.com/benc-uk/k6-reporter/main/dist/bundle.js'
 ```
 
-> Note. Replace `main` with a version tag (e.g. `2.2.0`) to use a specific version
+> Note. Replace `main` with a version tag (e.g. `3.0.0`) to use a specific version
 
 Then outside the test's default function, wrap it with the `handleSummary(data)` function which [K6 calls at the end of any test](https://github.com/loadimpact/k6/pull/1768), as follows:
 
 ```js
 export function handleSummary(data) {
   return {
-    "summary.html": htmlReport(data),
-  };
+    'summary.html': htmlReport(data),
+  }
 }
 ```
 
@@ -52,14 +48,14 @@ If you want more control over the output produced or to output the summary into 
 
 ```js
 // This will export to HTML as filename "result.html" AND also stdout using the text summary
-import { htmlReport } from "https://raw.githubusercontent.com/benc-uk/k6-reporter/main/dist/bundle.js";
-import { textSummary } from "https://jslib.k6.io/k6-summary/0.0.1/index.js";
+import { htmlReport } from 'https://raw.githubusercontent.com/benc-uk/k6-reporter/main/dist/bundle.js'
+import { textSummary } from 'https://jslib.k6.io/k6-summary/0.1.0/index.js'
 
 export function handleSummary(data) {
   return {
-    "result.html": htmlReport(data),
-    stdout: textSummary(data, { indent: " ", enableColors: true }),
-  };
+    'result.html': htmlReport(data),
+    stdout: textSummary(data, { indent: ' ', enableColors: true }),
+  }
 }
 ```
 
