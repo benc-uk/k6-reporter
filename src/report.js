@@ -92,6 +92,7 @@ export function htmlReport(data, opts = {}) {
     'ws_sessions',
   ]
 
+  // These are special metrics not shown in the main metrics table
   const otherMetrics = [
     'iterations',
     'data_sent',
@@ -103,34 +104,14 @@ export function htmlReport(data, opts = {}) {
     'http_req_duration{expected_response:true}',
   ]
 
+  // Trend stats are essentially columns to show for trend metrics, like avg, min, max, p(90), etc
   const trendStats = data.options.summaryTrendStats || []
+
+  // Gather metrics by their type for easier rendering in the template
   const trendMetrics = metricListSorted.filter((m) => data.metrics[m].type === 'trend' && !otherMetrics.includes(m))
   const rateMetrics = metricListSorted.filter((m) => data.metrics[m].type === 'rate' && !otherMetrics.includes(m))
   const counterMetrics = metricListSorted.filter((m) => data.metrics[m].type === 'counter' && !otherMetrics.includes(m))
   const gaugeMetrics = metricListSorted.filter((m) => data.metrics[m].type === 'gauge' && !otherMetrics.includes(m))
-
-  console.log(trendMetrics)
-  console.log(rateMetrics)
-  console.log(counterMetrics)
-  console.log(gaugeMetrics)
-
-  const checkThres = (metric, valName) => {
-    if (!metric.thresholds) {
-      return ''
-    }
-
-    for (const thres in metric.thresholds) {
-      if (thres.includes(valName)) {
-        const isOK = metric.thresholds[thres].ok ?? true
-        if (!isOK) {
-          return 'failed'
-        }
-        return 'good'
-      }
-    }
-
-    return ''
-  }
 
   // Render the template
   const html = ejs.render(template, {
@@ -149,7 +130,7 @@ export function htmlReport(data, opts = {}) {
     checkFailures,
     checkPasses,
     version,
-    checkThres,
+    isThresOK,
   })
 
   // Return HTML string needs wrapping in a handleSummary result object
@@ -168,4 +149,26 @@ function countChecks(checks) {
     fails += parseInt(check.fails, 10)
   }
   return { passes, fails }
+}
+
+//
+// Helper to check if a threshold is present and if it passed or failed
+// Used in the EJS templates
+//
+function isThresOK(metric, valName) {
+  if (!metric.thresholds) {
+    return ''
+  }
+
+  for (const thres in metric.thresholds) {
+    if (thres.includes(valName)) {
+      const isOK = metric.thresholds[thres].ok ?? true
+      if (!isOK) {
+        return 'failed'
+      }
+      return 'good'
+    }
+  }
+
+  return ''
 }

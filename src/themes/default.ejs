@@ -539,7 +539,7 @@
                      if (val === undefined) { val = 'n/a'; }
                      else { val = val.toFixed(2); }
                 %>
-                  <td class="<%= checkThres(metricData, statName) %>"><%= val %></td>
+                  <td class="<%= isThresOK(metricData, statName) %>"><%= val %></td>
                 <% } %> 
               </tr>
             <% } %>
@@ -571,7 +571,7 @@
                      if (val === undefined) { val = 'n/a'; }
                      else { val = val.toFixed(2); }
                 %>
-                  <td class="<%= checkThres(metricData, statName) %>"><%= val %></td>
+                  <td class="<%= isThresOK(metricData, statName) %>"><%= val %></td>
                 <% } %> 
   
               </tr>
@@ -602,7 +602,7 @@
                      if (val === undefined) { val = 'n/a'; }
                      else { val = val.toFixed(2); }
                 %>
-                  <td class="<%= checkThres(metricData, statName) %>"><%= val %></td>
+                  <td class="<%= isThresOK(metricData, statName) %>"><%= val %></td>
                 <% } %>  
               </tr>
             <% } %>
