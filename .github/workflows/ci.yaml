@@ -22,5 +22,18 @@ jobs:
       - name: Bundle
         run: npm run build
 
-      # Commit all changed files back to the repository
-      - uses: stefanzweifel/git-auto-commit-action@v6
+      - name: Add dist bundle
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: |
+          git config --local user.email "benc.uk@gmail.com"
+          git config --local user.name "GitHub Actions"
+          git add --force dist
+          git commit -m "CI automation $(date)"
+
+      - name: Push changes
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: main
+          force: true
