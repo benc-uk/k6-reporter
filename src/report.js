@@ -52,6 +52,7 @@ export function htmlReport(data, opts = {}) {
     }
   }
 
+  // Sort the metric names for deterministic output
   metricListSorted.sort()
 
   // Count the checks and those that have passed or failed
@@ -74,24 +75,6 @@ export function htmlReport(data, opts = {}) {
   // Start counting checks from the root group
   countChecksInGroup(data.root_group)
 
-  // Kept for backwards compatibility with older themes classic and bootstrap
-  const legacyStandardMetrics = [
-    'grpc_req_duration',
-    'http_req_duration',
-    'http_req_waiting',
-    'http_req_connecting',
-    'http_req_tls_handshaking',
-    'http_req_sending',
-    'http_req_receiving',
-    'http_req_blocked',
-    'iteration_duration',
-    'group_duration',
-    'ws_connecting',
-    'ws_msgs_received',
-    'ws_msgs_sent',
-    'ws_sessions',
-  ]
-
   // These are special metrics not shown in the main metrics table
   const otherMetrics = [
     'iterations',
@@ -105,6 +88,7 @@ export function htmlReport(data, opts = {}) {
   ]
 
   // Trend stats are essentially columns to show for trend metrics, like avg, min, max, p(90), etc
+  // It is assumed all trend metrics have the same stats available, I've never seen otherwise
   const trendStats = data.options.summaryTrendStats || []
 
   // Gather metrics by their type for easier rendering in the template
@@ -113,23 +97,35 @@ export function htmlReport(data, opts = {}) {
   const counterMetrics = metricListSorted.filter((m) => data.metrics[m].type === 'counter' && !otherMetrics.includes(m))
   const gaugeMetrics = metricListSorted.filter((m) => data.metrics[m].type === 'gauge' && !otherMetrics.includes(m))
 
+  if (opts.debug) {
+    console.log('Trend metrics:', trendMetrics)
+    console.log('Rate metrics:', rateMetrics)
+    console.log('Counter metrics:', counterMetrics)
+    console.log('Gauge metrics:', gaugeMetrics)
+  }
+
   // Render the template
   const html = ejs.render(template, {
+    version,
     data,
     title: opts.title,
-    theme: opts.theme,
+    theme: opts.theme, // Only used by the bootstrap theme
     trendStats,
+
+    // These are lists of metric names
     trendMetrics,
     rateMetrics,
     counterMetrics,
     gaugeMetrics,
-    standardMetrics: legacyStandardMetrics,
     otherMetrics,
+
+    // These are numbers we have counted
     thresholdFailures,
     thresholdCount,
     checkFailures,
     checkPasses,
-    version,
+
+    // Helpers for the template
     isThresOK,
   })
 

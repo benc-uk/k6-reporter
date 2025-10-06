@@ -133,6 +133,23 @@
                           } 
                         } 
                         
+                        const standardMetrics = [
+                          'grpc_req_duration',
+                          'http_req_duration',
+                          'http_req_waiting',
+                          'http_req_connecting',
+                          'http_req_tls_handshaking',
+                          'http_req_sending',
+                          'http_req_receiving',
+                          'http_req_blocked',
+                          'iteration_duration',
+                          'group_duration',
+                          'ws_connecting',
+                          'ws_msgs_received',
+                          'ws_msgs_sent',
+                          'ws_sessions',
+                        ]
+
                         for(metricName of standardMetrics) { 
                           if(!data.metrics[metricName]) { continue } 
                           var metric=data.metrics[metricName] %>

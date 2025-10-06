@@ -10,7 +10,7 @@ export default [
         console: 'readonly',
         process: 'readonly',
       },
-      ecmaVersion: 2022,
+      ecmaVersion: 2024,
       sourceType: 'module',
     },
     rules: {

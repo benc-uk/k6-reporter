@@ -548,102 +548,101 @@
         <% } %>
 
         <% if(rateMetrics.length > 0) { %>
-        <h4><i class="fas fa-percent"></i> Rates</h4>
-        <table class="pure-table pure-table-striped">
-          <thead>
-            <tr>
-              <th></th>
-              <th>Rate</th> 
-              <th>Passes</th>
-              <th>Fails</th>
-            </tr>
-          </thead>
-          <tbody>
-            <% for (metric of rateMetrics) { 
-                if (otherMetrics.includes(metric)) continue;
-                let metricData = data.metrics[metric];
-                if (!metricData) continue;
-            %>
+          <h4><i class="fas fa-percent"></i> Rates</h4>
+          <table class="pure-table pure-table-striped">
+            <thead>
               <tr>
-                <td><b><%= metric %></b></td>
-                <% for (statName of ['rate', 'passes', 'fails']) {
-                     let val = metricData.values[statName];
-                     if (val === undefined) { val = 'n/a'; }
-                     else { val = val.toFixed(2); }
-                %>
-                  <td class="<%= isThresOK(metricData, statName) %>"><%= val %></td>
-                <% } %> 
-  
+                <th></th>
+                <th>Rate</th> 
+                <th>Passes</th>
+                <th>Fails</th>
               </tr>
-            <% } %>
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              <% for (metric of rateMetrics) { 
+                  if (otherMetrics.includes(metric)) continue;
+                  let metricData = data.metrics[metric];
+                  if (!metricData) continue;
+              %>
+                <tr>
+                  <td><b><%= metric %></b></td>
+                  <% for (statName of ['rate', 'passes', 'fails']) {
+                      let val = metricData.values[statName];
+                      if (val === undefined) { val = 'n/a'; }
+                      else { val = val.toFixed(2); }
+                  %>
+                    <td class="<%= isThresOK(metricData, statName) %>"><%= val %></td>
+                  <% } %> 
+    
+                </tr>
+              <% } %>
+            </tbody>
+          </table>
         <% } %>
 
         <% if(counterMetrics.length > 0) { %>
-        <h4><i class="fas fa-calculator"></i> Counters</h4>
-        <table class="pure-table pure-table-striped">
-          <thead>
-            <tr>
-              <th></th>
-              <th>Count</th> 
-            </tr>
-          </thead>
-          <tbody>
-            <% for (metric of counterMetrics) { 
-                if (otherMetrics.includes(metric)) continue;
-                let metricData = data.metrics[metric];
-                if (!metricData) continue;
-            %>
+          <h4><i class="fas fa-calculator"></i> Counters</h4>
+          <table class="pure-table pure-table-striped">
+            <thead>
               <tr>
-                <td><b><%= metric %></b></td>
-                <% for (statName of ['count']) {
-                     let val = metricData.values[statName];
-                     if (val === undefined) { val = 'n/a'; }
-                     else { val = val.toFixed(2); }
-                %>
-                  <td class="<%= isThresOK(metricData, statName) %>"><%= val %></td>
-                <% } %>  
+                <th></th>
+                <th>Count</th> 
               </tr>
-            <% } %>
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              <% for (metric of counterMetrics) { 
+                  if (otherMetrics.includes(metric)) continue;
+                  let metricData = data.metrics[metric];
+                  if (!metricData) continue;
+              %>
+                <tr>
+                  <td><b><%= metric %></b></td>
+                  <% for (statName of ['count']) {
+                      let val = metricData.values[statName];
+                      if (val === undefined) { val = 'n/a'; }
+                      else { val = val.toFixed(2); }
+                  %>
+                    <td class="<%= isThresOK(metricData, statName) %>"><%= val %></td>
+                  <% } %>  
+                </tr>
+              <% } %>
+            </tbody>
+          </table>
         <% } %>
 
         <% if(gaugeMetrics.length > 0) { %>
-        <h4><i class="fas fa-tachometer-alt"></i> Gauges</h4>
-        <table class="pure-table pure-table-striped">
-          <thead>
-            <tr>
-              <th></th>
-              <th>Value</th> 
-              <th>Min</th>
-              <th>Max</th>
-            </tr>
-          </thead>
-          <tbody>
-            <% for (metric of gaugeMetrics) { 
-                if (otherMetrics.includes(metric)) continue;
-                let metricData = data.metrics[metric];
-                if (!metricData) continue;
-            %>
+          <h4><i class="fas fa-tachometer-alt"></i> Gauges</h4>
+          <table class="pure-table pure-table-striped">
+            <thead>
               <tr>
-                <td><b><%= metric %></b></td>
-                <% for (statName of ['value', 'min', 'max']) {
-                     let val = metricData.values[statName];
-                     if (val === undefined) { val = 'n/a'; }
-                     else { val = val.toFixed(2); }
-                %>
-                  <td class="<%= checkThres(metricData, statName) %>"><%= val %></td>
-                <% } %> 
+                <th></th>
+                <th>Value</th> 
+                <th>Min</th>
+                <th>Max</th>
               </tr>
-            <% } %>
-          </tbody>
-        </table>
-        <% } %>
-      
+            </thead>
+            <tbody>
+              <% for (metric of gaugeMetrics) { 
+                  if (otherMetrics.includes(metric)) continue;
+                  let metricData = data.metrics[metric];
+                  if (!metricData) continue;
+              %>
+                <tr>
+                  <td><b><%= metric %></b></td>
+                    <% for (statName of ['value', 'min', 'max']) {
+                        let val = metricData.values[statName];
+                        if (val === undefined) { val = 'n/a'; }
+                        else { val = val.toFixed(2); }
+                    %>
+                      <td class="<%= isThresOK(metricData, statName) %>"><%= val %></td>
+                    <% } %> 
+                  </tr>
+                <% } %>
+              </tbody>
+            </table>
+          <% } %>
+        
           </div> 
-
           <!-- ---- end tab ---- -->
 
           <input type="radio" name="tabs" id="tabtwo">
