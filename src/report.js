@@ -87,10 +87,6 @@ export function htmlReport(data, opts = {}) {
     'http_req_duration{expected_response:true}',
   ]
 
-  // Trend stats are essentially columns to show for trend metrics, like avg, min, max, p(90), etc
-  // It is assumed all trend metrics have the same stats available, I've never seen otherwise
-  const trendStats = data.options.summaryTrendStats || []
-
   // Gather metrics by their type for easier rendering in the template
   const trendMetrics = metricListSorted.filter((m) => data.metrics[m].type === 'trend' && !otherMetrics.includes(m))
   const rateMetrics = metricListSorted.filter((m) => data.metrics[m].type === 'rate' && !otherMetrics.includes(m))
@@ -110,7 +106,6 @@ export function htmlReport(data, opts = {}) {
     data,
     title: opts.title,
     theme: opts.theme, // Only used by the bootstrap theme
-    trendStats,
 
     // These are lists of metric names
     trendMetrics,
