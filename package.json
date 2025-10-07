@@ -8,11 +8,12 @@
   "homepage": "https://github.com/benc-uk/k6-reporter",
   "scripts": {
     "build": "webpack",
+    "build:cjs": "webpack --config cjs-webpack.config.js",
     "lint": "eslint src && prettier --check src",
-    "lint-fix": "eslint src --fix && prettier --write src",
+    "lint:fix": "eslint src --fix && prettier --write src",
     "test": "node tests/harness.js",
-    "k6-simple": "k6 run tests/k6/simple.js",
-    "k6-grpc": "k6 run tests/k6/grpc.js"
+    "k6:simple": "k6 run tests/k6/simple.js",
+    "k6:grpc": "k6 run tests/k6/grpc.js"
   },
   "devDependencies": {
     "@eslint/js": "^9.37.0",
@@ -23,6 +24,7 @@
     "webpack-cli": "^6.0.1"
   },
   "dependencies": {
-    "ejs": "^3.1.10"
+    "ejs": "^3.1.10",
+    "handlebars": "^4.7.8"
   }
 }

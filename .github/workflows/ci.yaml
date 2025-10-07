@@ -22,7 +22,9 @@ jobs:
         run: npm run lint
 
       - name: Bundle
-        run: npm run build
+        run: |
+          npm run build
+          npm run build:cjs
 
       # Commit all changed files back to the repository
       - uses: stefanzweifel/git-auto-commit-action@v6
