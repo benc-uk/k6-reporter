@@ -2,7 +2,7 @@ import grpc from 'k6/net/grpc'
 import { check } from 'k6'
 import { Counter, Trend, Rate, Gauge } from 'k6/metrics'
 
-//import { htmlReport } from "https://raw.githubusercontent.com/benc-uk/k6-reporter/main/dist/bundle.js";
+//import { htmlReport } from 'https://raw.githubusercontent.com/benc-uk/k6-reporter/3.0.1/dist/bundle.js'
 import { htmlReport } from '../../dist/bundle.js'
 import { textSummary } from 'https://jslib.k6.io/k6-summary/0.1.0/index.js'
 
@@ -24,7 +24,7 @@ export const options = {
 
 export function handleSummary(data) {
   return {
-    'summary-grpc.html': htmlReport(data, { debug: true, title: 'gRPC Test Report' }),
+    'summary-grpc.html': htmlReport(data, { debug: false, title: 'gRPC Test Report' }),
     stdout: textSummary(data, { indent: ' ', enableColors: true }),
   }
 }

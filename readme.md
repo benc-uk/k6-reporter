@@ -23,7 +23,7 @@ import { htmlReport } from 'https://raw.githubusercontent.com/benc-uk/k6-reporte
 ```
 
 - Replace `latest` with a version tag (e.g. `3.0.1`) to pin to a specific version, see [releases](https://github.com/benc-uk/k6-reporter/releases/) for available versions
-- Or use `main` to always get the latest code on the main branch (not recommended for production use)
+- Or use `main` to always get the latest development version, which may be unstable or even broken
 
 Then outside the test default function, wrap it with the `handleSummary(data)` function which [K6 calls at the end of any test](https://grafana.com/docs/k6/latest/results-output/end-of-test/custom-summary/), as follows:
 
@@ -35,17 +35,17 @@ export function handleSummary(data) {
 }
 ```
 
-The key used in the returned object is the filename that will be written to, and can be any valid filename or path
+The key used in the returned object is used as the filename of the output, and can be any valid filename or path
 
 ## Options
 
 The **htmlReport** function accepts an optional options object/map as a second parameter, with the following properties
 
-| Property | Type    | Default                   | Description                                                                     |
-| -------- | ------- | ------------------------- | ------------------------------------------------------------------------------- |
-| theme    | string  | 'default'                 | The theme to use for the report. See below                                      |
-| title    | string  | 'K6 Test Report \<date\>' | The title to use for the report                                                 |
-| debug    | boolean | false                     | If true, will output the raw JSON data input, you probably will never need this |
+| Property | Type    | Default                 | Description                                                                     |
+| -------- | ------- | ----------------------- | ------------------------------------------------------------------------------- |
+| theme    | string  | 'default'               | The theme to use for the report. See below                                      |
+| title    | string  | 'K6 Test Report {date}' | The title to use for the report                                                 |
+| debug    | boolean | false                   | If true, will output the raw JSON data input, you probably will never need this |
 
 ## Themes
 
@@ -54,9 +54,9 @@ Version 3 introduced themes support for styling the look of the output. There ar
 - The `default` theme was revised in v3 to be modern and cleaner, you can thank AI Claude Sonnet for the design work! It's also smarter in what values and columns it shows and is generally the best choice.
 - The `classic` theme is the original theme, and is still available if you prefer the chunky old style.
 - The `bootstrap` theme uses vanilla [Bootstrap 5](https://getbootstrap.com/) for styling and layout.
-- You can also use [Bootswatch](https://bootswatch.com/) themes for a different look and feel. To use a Bootswatch theme, set the theme option to `bootswatch:<name>`, where `<name>` is one of the available Bootswatch themes, e.g. `cerulean`, `cyborg`, `darkly`, etc. If no name is provided, it will default to `cerulean`.
+  - You can also use [Bootswatch](https://bootswatch.com/) themes for a different look and feel. To use a Bootswatch theme, set the theme option to `bootswatch:<name>`, where `<name>` is one of the available Bootswatch themes, e.g. `cerulean`, `cyborg`, `darkly`, etc. If no name is provided, it will default to `cerulean`.
 
-> NOTE: ALl themes other than `default` are considered legacy and will not be supported or get new features in future releases. They are provided for backwards compatibility only.
+> NOTE: All themes other than `default` are considered legacy and will not be supported or get new features in future releases. They are provided for backwards compatibility only.
 
 ## Multiple outputs
 

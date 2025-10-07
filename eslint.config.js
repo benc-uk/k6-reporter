@@ -3,7 +3,7 @@ import js from '@eslint/js'
 export default [
   js.configs.recommended,
   {
-    files: ['**/*.{js,mjs,cjs}'],
+    files: ['src/*.js'],
     languageOptions: {
       globals: {
         __VERSION__: 'readonly',
