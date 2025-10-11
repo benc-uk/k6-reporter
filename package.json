@@ -13,7 +13,8 @@
     "lint:fix": "eslint src --fix && prettier --write src",
     "test": "node tests/harness.js",
     "k6:simple": "k6 run tests/k6/simple.js",
-    "k6:grpc": "k6 run tests/k6/grpc.js"
+    "k6:grpc": "k6 run tests/k6/grpc.js",
+    "clean": "rm -rf **/*.html"
   },
   "devDependencies": {
     "@eslint/js": "^9.37.0",
