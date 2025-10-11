@@ -10,6 +10,8 @@ Any checks or thresolds defined in your test will be highlighted, with indicatio
 ![](https://img.shields.io/github/release/benc-uk/k6-reporter)
 [![CI Checks & Build](https://github.com/benc-uk/k6-reporter/actions/workflows/ci.yaml/badge.svg)](https://github.com/benc-uk/k6-reporter/actions/workflows/ci.yaml)
 
+NOTE: Since v0.49.0 k6 has provided both a realtime web dashboard and end of test HTML reports. See the [k6 documentation](https://grafana.com/docs/k6/latest/results-output/web-dashboard/) for more details. The graphs are much more detailed, but info like thresholds and checks are not shown or color coded. I'll let people decide which they prefer!
+
 # Basic Usage
 
 This extension needs to be added into your K6 test code and utilizes the _handleSummary_ callback hook. When your test completes, a HTML file will be written to the filesystem, containing the report.
