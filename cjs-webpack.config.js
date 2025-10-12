@@ -10,14 +10,10 @@ export default {
   mode: 'production',
   entry: './src/report.js',
 
-  experiments: {
-    outputModule: true,
-  },
-
   output: {
-    filename: 'bundle.js',
+    filename: 'bundle.cjs',
     path: path.resolve(process.cwd(), 'dist'),
-    libraryTarget: 'module',
+    libraryTarget: 'commonjs',
   },
 
   plugins: [
