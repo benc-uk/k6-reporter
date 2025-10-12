@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head> 
+    <meta charset="UTF-8" />
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" crossorigin="anonymous">
+    <link rel="shortcut icon" href="https://raw.githubusercontent.com/benc-uk/k6-reporter/main/assets/icon.png" type="image/png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= title %></title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      
+      body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 2rem;
+        color: #2d3748;
+      }
+      
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        background: #ffffff;
+        border-radius: 16px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        overflow: hidden;
+      }
+      
+      header {
+        background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
+        padding: 1.5rem 2rem;
+        color: white;
+      }
+      
+      header h1 {
+        font-size: 2rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+      
+      header h1 svg {
+        filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+      }
+      
+      .content {
+        padding: 1.5rem;
+      }
+      
+      footer { 
+        text-align: center;
+        padding: 1.5rem;
+        color: #718096;
+        font-size: 0.875rem;
+        border-top: 1px solid #e2e8f0;
+        background: #f7fafc;
+      }
+      
+      footer a {
+        text-decoration: none;
+        color: #7c3aed;
+        font-weight: 500;
+        transition: color 0.2s;
+      }
+      
+      footer a:hover {
+        color: #5b21b6;
+      }
+      
+      /* Status classes */
+      .failed {
+        background: linear-gradient(135deg, #fc8181 0%, #f56565 100%) !important;
+        color: white !important;
+      }     
+      
+      .good {
+        background: linear-gradient(135deg, #68d391 0%, #48bb78 100%) !important;
+        color: white !important;
+      }   
+      
+      td.failed {
+        font-weight: 600;
+        color: #e53e3e;
+      }
+      
+      td.good {
+        font-weight: 600;
+        color: #38a169;
+      }
+      
+      h2 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin: 2rem 0 1rem 0;
+        padding-bottom: 0.75rem;
+        border-bottom: 2px solid #e2e8f0;
+        color: #2d3748;
+      }
+      
+      h4 {
+        font-size: 1.125rem;
+        font-weight: 600;
+        margin: 1.5rem 0 1rem 0;
+        color: #4a5568;
+      }
+      
+      /* Metric Cards */
+      .metrics-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin: 0;
+      }
+      
+      .metric-card {
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+        border: 1px solid #e2e8f0;
+        position: relative;
+        overflow: hidden;
+        transition: transform 0.2s, box-shadow 0.2s;
+      }
+      
+      .metric-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+      }
+      
+      .metric-card.primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+      }
+      
+      .metric-card.success {
+        background: linear-gradient(135deg, #68d391 0%, #48bb78 100%);
+        color: white;
+      }
+      
+      .metric-card.danger {
+        background: linear-gradient(135deg, #fc8181 0%, #f56565 100%);
+        color: white;
+      }
+      
+      .metric-card.warning {
+        background: linear-gradient(135deg, #f6ad55 0%, #ed8936 100%);
+        color: white;
+      }
+      
+      .metric-card .icon {
+        position: absolute;
+        top: 50%;
+        right: 1rem;
+        transform: translateY(-50%);
+        font-size: 4rem;
+        opacity: 0.15;
+      }
+      
+      .metric-card h4 {
+        margin: 0 0 0.5rem 0;
+        font-size: 0.875rem;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        opacity: 0.9;
+        position: relative;
+        z-index: 2;
+      }
+      
+      .metric-card.primary h4,
+      .metric-card.success h4,
+      .metric-card.danger h4,
+      .metric-card.warning h4 {
+        color: white;
+      }
+      
+      .metric-value {
+        font-size: 2.5rem;
+        font-weight: 700;
+        position: relative;
+        z-index: 2;
+      }
+      
+      .metric-subtext {
+        font-size: 0.875rem;
+        opacity: 0.8;
+        margin-top: 0.25rem;
+      }
+      
+      /* Tabs */
+      .tabs {
+        display: flex;
+        flex-wrap: wrap;
+        margin-top: 2rem;
+      }
+      
+      .tabs label {
+        order: 1;
+        display: block;
+        padding: 1rem 2rem;
+        cursor: pointer;
+        color: #718096;
+        background: #f7fafc;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        border-top-left-radius: 12px;
+        border-top-right-radius: 12px;
+        margin-right: 0.25rem;
+        border: 2px solid transparent;
+        border-bottom: none;
+        font-size: 0.9rem;
+      }
+      
+      .tabs label:hover {
+        background: #edf2f7;
+        color: #4a5568;
+      }
+      
+      .tabs label i {
+        margin-right: 0.5rem;
+      }
+      
+      .tabs .tab {
+        order: 99;
+        flex-grow: 1;
+        width: 100%;
+        display: none;
+        padding: 2rem;
+        background: #ffffff;
+        border-radius: 0 12px 12px 12px;
+        border: 2px solid #e2e8f0;
+        min-height: 400px;
+      }
+      
+      .tabs input[type="radio"] {
+        display: none;
+      }
+      
+      .tabs input[type="radio"]:checked + label {
+        background: #ffffff;
+        color: #7c3aed;
+        border-color: #e2e8f0;
+        border-bottom-color: #ffffff;
+        position: relative;
+        bottom: -2px;
+      }
+      
+      .tabs input[type="radio"]:checked + label + .tab {
+        display: block;
+      }
+      
+      /* Tables */
+      table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        margin: 1rem 0;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      }
+      
+      thead {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+      }
+      
+      thead th {
+        padding: 1rem;
+        text-align: left;
+        font-weight: 600;
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+      
+      tbody tr {
+        background: white;
+        transition: background 0.2s;
+      }
+      
+      tbody tr:nth-child(even) {
+        background: #f7fafc;
+      }
+      
+      tbody tr:hover {
+        background: #edf2f7;
+      }
+      
+      tbody td {
+        padding: 1rem;
+        border-bottom: 1px solid #e2e8f0;
+        font-size: 0.9rem;
+      }
+      
+      tbody tr:last-child td {
+        border-bottom: none;
+      }
+      
+      tbody td:first-child {
+        font-weight: 500;
+      }
+      
+      /* Detail boxes for Other Stats */
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+        margin: 1rem 0;
+      }
+      
+      .stat-box {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+        border: 1px solid #e2e8f0;
+        position: relative;
+        overflow: hidden;
+        color: white;
+        transition: transform 0.2s, box-shadow 0.2s;
+      }
+      
+      .stat-box:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+      }
+      
+      .stat-box h4 {
+        margin: 0 0 1rem 0;
+        font-size: 0.875rem;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        opacity: 0.9;
+        color: white;
+        position: relative;
+        z-index: 2;
+      }
+      
+      .stat-box .icon {
+        position: absolute;
+        top: 50%;
+        right: 1rem;
+        transform: translateY(-50%);
+        font-size: 4rem;
+        opacity: 0.15;
+      }
+      
+      .stat-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.5rem 0;
+        position: relative;
+        z-index: 2;
+      }
+      
+      .stat-row:last-child {
+        border-bottom: none;
+      }
+      
+      .stat-label {
+        color: white;
+        font-weight: 400;
+        font-size: 0.875rem;
+        opacity: 0.9;
+      }
+      
+      .stat-value {
+        color: white;
+        font-weight: 700;
+        font-size: 1.5rem;
+      }
+      
+      /* Groups and Checks */
+      .group-header {
+        cursor: pointer;
+        user-select: none;
+        padding: 0.75rem 1rem;
+        background: #f7fafc;
+        border-radius: 8px;
+        margin: 1rem 0;
+        transition: background 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      
+      .group-header:hover {
+        background: #edf2f7;
+      }
+      
+      .group-header::before {
+        content: '▼';
+        font-size: 0.75rem;
+        transition: transform 0.2s;
+      }
+      
+      .sub-groups {
+        padding: 0 0 0 2rem;
+        margin-top: 1rem;
+      }
+      
+      .note {
+        margin-top: 1.5rem;
+        padding: 1rem;
+        background: #edf2f7;
+        border-left: 4px solid #667eea;
+        border-radius: 4px;
+        font-size: 0.9rem;
+        color: #4a5568;
+      }
+      
+      @media (max-width: 768px) {
+        body {
+          padding: 0.5rem;
+        }
+        
+        header {
+          padding: 1.5rem;
+        }
+        
+        header h1 {
+          font-size: 1.5rem;
+        }
+        
+        .content {
+          padding: 1rem;
+        }
+        
+        .metrics-grid {
+          grid-template-columns: 1fr;
+        }
+        
+        .tabs label {
+          padding: 0.75rem 1rem;
+          font-size: 0.8rem;
+        }
+        
+        .tabs .tab {
+          padding: 1rem;
+        }
+        
+        .metric-value {
+          font-size: 2rem;
+        }
+      }
+    </style>
+    <script> 
+      function tabClickHandler(e) {
+        let elemSubGroup = e.target.nextElementSibling;
+        if (!elemSubGroup) return;
+        
+        let display = elemSubGroup.style.display;
+        elemSubGroup.style.display = !display || display === "block" ? "none" : "block";
+      }
+    </script>
+  </head>
+
+  <body>
+    <div class="container">
+      <header>
+        <h1>
+          <svg width="50" height="45" viewBox="0 0 50 45" fill="none"><path d="M31.968 34.681a2.007 2.007 0 002.011-2.003c0-1.106-.9-2.003-2.011-2.003a2.007 2.007 0 00-2.012 2.003c0 1.106.9 2.003 2.012 2.003z" fill="white"></path><path d="M39.575 0L27.154 16.883 16.729 9.31 0 45h50L39.575 0zM23.663 37.17l-2.97-4.072v4.072h-2.751V22.038l2.75 1.989v7.66l3.659-5.014 2.086 1.51-3.071 4.21 3.486 4.776h-3.189v.001zm8.305.17c-2.586 0-4.681-2.088-4.681-4.662 0-1.025.332-1.972.896-2.743l4.695-6.435 2.086 1.51-2.239 3.07a4.667 4.667 0 013.924 4.6c0 2.572-2.095 4.66-4.681 4.66z" fill="white"></path></svg>
+          <%= title %>
+        </h1>
+      </header>
+
+      <div class="content">
+        <!-- Main info boxes -->
+        <div class="metrics-grid">
+          <div class="metric-card primary">
+            <i class="fas fa-globe icon"></i>
+            <h4>Total Requests</h4>
+            <div class="metric-value">
+              <% if(data.metrics.http_reqs) { %><%= data.metrics.http_reqs.values.count %><% } %>
+              <% if(data.metrics.grpc_reqs) { %><%= data.metrics.grpc_reqs.values.count %><% } %>
+            </div>
+          </div>
+          
+          <% if(data.metrics.http_req_failed && data.metrics.http_req_failed.values) { %>
+            <div class="metric-card <% if(data.metrics.http_req_failed.values.passes > 0) { %>danger<% } else { %>success<% } %>">
+              <i class="<% if(data.metrics.http_req_failed.values.passes > 0) { %>fas fa-times-circle<% } else { %>fas fa-check-circle<% } %> icon"></i>
+              <h4>Failed Requests</h4>
+              <div class="metric-value"><%= data.metrics.http_req_failed.values.passes %></div>
+            </div> 
+          <% } %>  
+          
+          <div class="metric-card <% if(thresholdFailures > 0) { %>danger<% } else { %>success<% } %>">
+            <i class="fas fa-exclamation-triangle icon"></i>
+            <h4>Breached Thresholds</h4>
+            <div class="metric-value"><%= thresholdFailures %></div>
+          </div>
+          
+          <div class="metric-card <% if(checkFailures > 0) { %>danger<% } else { %>success<% } %>">
+            <i class="fas fa-eye icon"></i>
+            <h4>Failed Checks</h4>
+            <div class="metric-value"><%= checkFailures %></div>
+          </div>
+        </div>
+
+        <!-- Tabs Section -->
+        <div class="tabs">
+          <input type="radio" name="tabs" id="tabone" checked="checked">
+          <label for="tabone"><i class="fas fa-microscope"></i> Detailed Metrics</label>
+          <div class="tab">
+
+            <% if(trendMetrics.length > 0) { %>
+              <h4><i class="fas fa-chart-line"></i> Trends & Times</h4>
+              <table class="pure-table pure-table-striped">
+                <thead>
+                  <tr>
+                    <th></th>
+                    <% for (statName of data.options.summaryTrendStats) { %>
+                      <th><%= statName.charAt(0).toUpperCase() + statName.slice(1) %></th>
+                    <% } %> 
+                  </tr>
+                </thead>
+                <tbody>
+                  <% for (metric of trendMetrics) { 
+                    let metricData = data.metrics[metric];
+                  %>
+                  <tr>
+                    <td><b><%= metric %></b></td>
+                    <% for (statName of data.options.summaryTrendStats) {
+                          let val = metricData.values[statName];
+                          val = val !== undefined ? val.toFixed(2) : val = '-'; %>
+                      <td class="<%= isThresOK(metricData, statName) %>"><%= val %></td>
+                    <% } %> 
+                  </tr>
+                  <% } %>
+                </tbody>
+              </table>
+            <% } %>
+
+            <% if(rateMetrics.length > 0) { %>
+              <h4><i class="fas fa-percent"></i> Rates</h4>
+              <table class="pure-table pure-table-striped">
+                <thead>
+                  <tr>
+                    <th></th>
+                    <th>Rate</th> 
+                    <th>Passes</th>
+                    <th>Fails</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% for (metric of rateMetrics) { 
+                    let metricData = data.metrics[metric];
+                  %>
+                  <tr>
+                    <td><b><%= metric %></b></td>
+                    <% for (statName of ['rate', 'passes', 'fails']) {
+                      let val = metricData.values[statName];
+                      val = val !== undefined ? val.toFixed(2) : val = '-'; %>
+                    %>
+                      <td class="<%= isThresOK(metricData, statName) %>"><%= val %></td>
+                    <% } %> 
+                  </tr>
+                  <% } %>
+                </tbody>
+              </table>
+            <% } %>
+
+            <% if(counterMetrics.length > 0) { %>
+              <h4><i class="fas fa-calculator"></i> Counters</h4>
+              <table class="pure-table pure-table-striped">
+                <thead>
+                  <tr>
+                    <th></th>
+                    <th>Count</th> 
+                  </tr>
+                </thead>
+                <tbody>
+                  <% for (metric of counterMetrics) { 
+                    let metricData = data.metrics[metric];
+                  %>
+                  <tr>
+                    <td><b><%= metric %></b></td>
+                    <% for (statName of ['count']) {
+                      let val = metricData.values[statName];
+                      val = val !== undefined ? val.toFixed(2) : val = '-'; %>
+                    %>
+                      <td class="<%= isThresOK(metricData, statName) %>"><%= val %></td>
+                    <% } %>  
+                  </tr>
+                  <% } %>
+                </tbody>
+              </table>
+            <% } %>
+
+            <% if(gaugeMetrics.length > 0) { %>
+              <h4><i class="fas fa-tachometer-alt"></i> Gauges</h4>
+              <table class="pure-table pure-table-striped">
+            <thead>
+              <tr>
+                <th></th>
+                <th>Value</th> 
+                <th>Min</th>
+                <th>Max</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% for (metric of gaugeMetrics) { 
+                let metricData = data.metrics[metric];
+              %>
+              <tr>
+                <td><b><%= metric %></b></td>
+                  <% for (statName of ['value', 'min', 'max']) {
+                    let val = metricData.values[statName];
+                    val = val !== undefined ? val.toFixed(2) : val = '-'; %>
+                  %>
+                    <td class="<%= isThresOK(metricData, statName) %>"><%= val %></td>
+                  <% } %> 
+                </tr>
+                <% } %>
+              </tbody>
+              </table>
+            <% } %>
+        
+          </div> 
+          <!-- ---- end tab ---- -->
+
+          <input type="radio" name="tabs" id="tabtwo">
+          <label for="tabtwo"><i class="fas fa-chart-pie"></i> Test Run Details</label>
+          <div class="tab">
+            <div class="stats-grid">
+              <% if (data.metrics.checks) { %>
+                <div class="stat-box">
+                  <h4>Checks</h4>
+                  <i class="fas fa-eye icon"></i>
+                  <div class="stat-row">
+                    <span class="stat-label">Passed</span>
+                    <span class="stat-value"><%= data.metrics.checks.values.passes %></span>
+                  </div>
+                  <div class="stat-row">
+                    <span class="stat-label">Failed</span>
+                    <span class="stat-value"><%= data.metrics.checks.values.fails %></span>
+                  </div>
+                </div>
+              <% } %>
+
+              <% if (data.metrics.iterations) { %>
+                <div class="stat-box">
+                  <h4>Iterations</h4>
+                  <i class="fas fa-redo icon"></i>
+                  <div class="stat-row">
+                    <span class="stat-label">Total</span>
+                    <span class="stat-value"><%= data.metrics.iterations.values.count %></span>
+                  </div>
+                  <div class="stat-row">
+                    <span class="stat-label">Rate</span>
+                    <span class="stat-value"><%= data.metrics.iterations.values.rate.toFixed(2) %>/s</span>
+                  </div>
+                </div>
+              <% } %>
+
+              <div class="stat-box">
+                <h4>Virtual Users</h4>
+                <i class="fas fa-user icon"></i>
+                <div class="stat-row">
+                  <span class="stat-label">Min</span>
+                  <span class="stat-value"><%= data.metrics.vus ? data.metrics.vus.values.min : 1 %></span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-label">Max</span>
+                  <span class="stat-value"><%= data.metrics.vus ? data.metrics.vus.values.max : 1 %></span>
+                </div>
+              </div>
+
+              <div class="stat-box">
+                <h4>Requests</h4>
+                <i class="fas fa-globe icon"></i>
+                <div class="stat-row">
+                  <span class="stat-label">Total</span>
+                  <span class="stat-value">
+                    <% if(data.metrics.http_reqs) { %><%= data.metrics.http_reqs.values.count %><% } %>
+                    <% if(data.metrics.grpc_reqs) { %><%= data.metrics.grpc_reqs.values.count %><% } %>
+                  </span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-label">Rate</span>
+                  <span class="stat-value">
+                    <% if(data.metrics.http_reqs) { %><%= data.metrics.http_reqs.values.rate.toFixed(2) %>/s<% } %>
+                    <% if(data.metrics.grpc_reqs) { %><%= data.metrics.grpc_reqs.values.rate.toFixed(2) %>/s<% } %>
+                  </span>
+                </div>
+              </div>
+
+              <div class="stat-box">
+                <h4>Data Received</h4>
+                <i class="fas fa-cloud-download-alt icon"></i>
+                <div class="stat-row">
+                  <span class="stat-label">Total</span>
+                  <span class="stat-value"><%= (data.metrics.data_received.values.count/1000000).toFixed(2) %> MB</span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-label">Rate</span>
+                  <span class="stat-value"><%= (data.metrics.data_received.values.rate/1000000).toFixed(2) %> mB/s</span>
+                </div>
+              </div>
+
+              <div class="stat-box">
+                <h4>Data Sent</h4>
+                <i class="fas fa-cloud-upload-alt icon"></i>
+                <div class="stat-row">
+                  <span class="stat-label">Total</span>
+                  <span class="stat-value"><%= (data.metrics.data_sent.values.count/1000000).toFixed(2) %> MB</span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-label">Rate</span>
+                  <span class="stat-value"><%= (data.metrics.data_sent.values.rate/1000000).toFixed(2) %> mB/s</span>
+                </div>
+              </div>
+            </div>
+          </div>  
+          <!-- ---- end tab ---- -->     
+
+          <input type="radio" name="tabs" id="tabthree">
+          <label for="tabthree"><i class="fas fa-square-check"></i> Checks & Groups</label>
+          <div class="tab">
+            <% function renderGroup(group) { %>
+              <h2 class="group-header" onclick="tabClickHandler(event)">Group - <%= group.name %></h2>
+              <div>
+                <% if(group.checks.length > 0) { %>
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Check Name</th>
+                        <th>Passes</th>
+                        <th>Failures</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <% for(check of group.checks) { %>
+                        <tr class="checkDetails">
+                          <td width="50%"><%= check.name %></td>
+                          <td class="<% if(check.fails === 0 && check.passes > 0) { %>good<% } %>"><%= check.passes %></td>
+                          <td class="<% if(check.fails > 0) { %>failed<% } %>"><%= check.fails %></td>
+                        </tr>
+                      <% } %>
+                    </tbody>
+                  </table>
+                <% } %>
+                <% if(group.groups.length > 0) { %>
+                  <div class="sub-groups">
+                    <% for(subGroup of group.groups) { %>
+                      <%- renderGroup(subGroup) %>
+                    <% } %>
+                  </div>
+                <% } %>
+              </div>
+            <% } %>
+
+            <% for(group of data.root_group.groups) { %>
+              <%- renderGroup(group) %>
+            <% } %>
+
+            <h2>Other Checks</h2>
+            <table>
+              <thead>
+                <tr>
+                  <th>Check Name</th>
+                  <th>Passes</th>
+                  <th>Failures</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% for(check of data.root_group.checks) { %>
+                  <tr class="checkDetails">
+                    <td width="50%"><%= check.name %></td>
+                    <td class="<% if(check.fails === 0 && check.passes > 0) { %>good<% } %>"><%= check.passes %></td>
+                    <td class="<% if(check.fails > 0) { %>failed<% } %>"><%= check.fails %></td>
+                  </tr>
+                <% } %>
+              </tbody>
+            </table>     
+          </div> 
+          <!-- ---- end tab ---- -->
+        </div>
+      </div>
+      
+      <footer>K6 Reporter v<%= version %> - Ben Coleman 2025 · <a href="https://github.com/benc-uk/k6-reporter">GitHub</a></footer>
+    </div>
+  </body>
+</html>

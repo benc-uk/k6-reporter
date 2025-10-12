@@ -1,32 +1,31 @@
 {
   "name": "k6-reporter",
-  "version": "2.4.0",
+  "version": "3.0.0",
   "description": "Export K6 test summary as a HTML report",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/benc-uk/k6-reporter.git"
-  },
-  "keywords": [
-    "k6",
-    "load-testing",
-    "reporting"
-  ],
-  "scripts": {
-    "build": "webpack",
-    "lint": "eslint src && prettier --check src",
-    "lint-fix": "eslint src --fix && prettier --write src"
-  },
   "author": "Ben Coleman",
   "license": "MIT",
+  "type": "module",
   "homepage": "https://github.com/benc-uk/k6-reporter",
+  "scripts": {
+    "build": "webpack",
+    "build:cjs": "webpack --config cjs-webpack.config.js",
+    "lint": "eslint src && prettier --check src",
+    "lint:fix": "eslint src --fix && prettier --write src",
+    "test": "node tests/harness.js",
+    "k6:simple": "k6 run tests/k6/simple.js",
+    "k6:grpc": "k6 run tests/k6/grpc.js",
+    "clean": "rm -rf **/*.html"
+  },
   "devDependencies": {
-    "clean-webpack-plugin": "^3.0.0",
-    "eslint": "^7.22.0",
-    "prettier": "^2.2.1",
-    "webpack": "^5.11.0",
-    "webpack-cli": "^4.3.0"
+    "@eslint/js": "^9.37.0",
+    "clean-webpack-plugin": "^4.0.0",
+    "eslint": "^9.37.0",
+    "prettier": "^3.6.2",
+    "webpack": "^5.102.0",
+    "webpack-cli": "^6.0.1"
   },
   "dependencies": {
-    "ejs": "^3.1.6"
+    "ejs": "^3.1.10",
+    "handlebars": "^4.7.8"
   }
 }
