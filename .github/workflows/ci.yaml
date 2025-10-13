@@ -20,7 +20,7 @@ jobs:
 
       - name: Lint Check
         run: npm run lint
-
+        
       - name: Bundle
         run: |
           npm run build

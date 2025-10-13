@@ -740,6 +740,7 @@
                         <th>Check Name</th>
                         <th>Passes</th>
                         <th>Failures</th>
+                        <th>% Pass</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -748,6 +749,7 @@
                           <td width="50%"><%= check.name %></td>
                           <td class="<% if(check.fails === 0 && check.passes > 0) { %>good<% } %>"><%= check.passes %></td>
                           <td class="<% if(check.fails > 0) { %>failed<% } %>"><%= check.fails %></td>
+                          <td class="<% if(check.fails > 0) { %>failed<% } %>"><%= parseFloat((check.passes / (check.fails + check.passes)) * 100).toFixed(2) %></td>
                         </tr>
                       <% } %>
                     </tbody>
@@ -774,6 +776,7 @@
                   <th>Check Name</th>
                   <th>Passes</th>
                   <th>Failures</th>
+                  <th>% Pass</th>
                 </tr>
               </thead>
               <tbody>
@@ -782,6 +785,7 @@
                     <td width="50%"><%= check.name %></td>
                     <td class="<% if(check.fails === 0 && check.passes > 0) { %>good<% } %>"><%= check.passes %></td>
                     <td class="<% if(check.fails > 0) { %>failed<% } %>"><%= check.fails %></td>
+                    <td class="<% if(check.fails > 0) { %>failed<% } %>"><%= parseFloat((check.passes / (check.fails + check.passes)) * 100).toFixed(2) %></td>
                   </tr>
                 <% } %>
               </tbody>
