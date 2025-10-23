@@ -4,7 +4,7 @@ K6 HTML Summary Report is a plugin extension that transforms [k6](https://k6.io/
 
 This helps visualize load test results in an easy-to-read format, enabling better analysis and sharing of performance test results. Simply import the module into your k6 test scripts to generate comprehensive HTML reports with charts and tables showing response times, request rates, and other critical performance indicators.
 
-Any checks or thresolds defined in your test will be highlighted, with indications of pass/fail status.
+Any checks or thresholds defined in your test will be highlighted, with indications of pass/fail status.
 
 ![](https://img.shields.io/github/last-commit/benc-uk/k6-reporter)
 ![](https://img.shields.io/github/release/benc-uk/k6-reporter)
@@ -15,6 +15,8 @@ NOTE: Since v0.49.0 k6 has provided both a realtime web dashboard and end of tes
 # Basic Usage
 
 This extension needs to be added into your K6 test code and utilizes the _handleSummary_ callback hook. When your test completes, a HTML file will be written to the filesystem, containing the report.
+
+> NOTE! Ensure you are running k6 version 1.30.0 or later, as earlier versions do not support ESM modules which is how this extension is distributed.
 
 To use, add this module to your test code.
 
