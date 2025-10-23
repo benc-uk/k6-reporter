@@ -1,0 +1,141 @@
+name: Bug Report
+description: File a bug report to help us improve k6-reporter
+title: '[Bug]: '
+labels: ['bug']
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report! Please provide as much detail as possible to help us identify and fix the issue.
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: A clear and concise description of what the bug is.
+      placeholder: Tell us what you see!
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: Expected Behavior
+      description: A clear and concise description of what you expected to happen.
+      placeholder: What should have happened instead?
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction-steps
+    attributes:
+      label: Steps to Reproduce
+      description: Steps to reproduce the behavior
+      placeholder: |
+        1. Run k6 with '...'
+        2. Generate report with '...'
+        3. See error
+    validations:
+      required: true
+
+  - type: input
+    id: k6-version
+    attributes:
+      label: k6 Version
+      description: What version of k6 are you running?
+      placeholder: 'e.g., v0.47.0'
+    validations:
+      required: true
+
+  - type: input
+    id: k6-reporter-version
+    attributes:
+      label: k6-reporter Version
+      description: What version of k6-reporter are you using?
+      placeholder: 'e.g., v2.3.0 or commit hash if using from source'
+    validations:
+      required: true
+
+  - type: dropdown
+    id: operating-system
+    attributes:
+      label: Operating System
+      description: What operating system are you using?
+      options:
+        - Windows
+        - macOS
+        - Linux (Ubuntu/Debian)
+        - Linux (RHEL/CentOS/Fedora)
+        - Linux (Other)
+        - Docker
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: os-version
+    attributes:
+      label: OS Version
+      description: What version of your operating system?
+      placeholder: 'e.g., Windows 11, macOS 14.1, Ubuntu 22.04, etc.'
+    validations:
+      required: false
+
+  - type: dropdown
+    id: node-version
+    attributes:
+      label: Node.js Version
+      description: What version of Node.js are you using?
+      options:
+        - '18.x'
+        - '20.x'
+        - '21.x'
+        - '22.x'
+        - 'Other'
+        - 'Not applicable'
+    validations:
+      required: false
+
+  - type: textarea
+    id: k6-script-sample
+    attributes:
+      label: Sample k6 Script
+      description: If applicable, provide a minimal k6 script that reproduces the issue
+      render: javascript
+      placeholder: |
+        import { htmlReport } from 'https://raw.githubusercontent.com/benc-uk/k6-reporter/main/dist/bundle.js';
+
+        export function handleSummary(data) {
+          return {
+            "summary.html": htmlReport(data),
+          };
+        }
+
+        export default function () {
+          // Your test code here
+        }
+
+  - type: textarea
+    id: error-logs
+    attributes:
+      label: Error Logs
+      description: If applicable, provide any error messages or logs
+      render: shell
+      placeholder: Paste any error messages or relevant log output here
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Add any other context about the problem here, such as screenshots, configuration files, etc.
+      placeholder: Any additional information that might help us understand the issue
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      description: By submitting this issue, you agree to follow our Code of Conduct
+      options:
+        - label: I agree to follow this project's Code of Conduct
+          required: true
