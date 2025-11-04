@@ -550,9 +550,9 @@
                 <thead>
                   <tr>
                     <th></th>
-                    <th>Rate</th> 
-                    <th>Passes</th>
-                    <th>Fails</th>
+                    <th>Rate %</th> 
+                    <th>Pass Count</th>
+                    <th>Fail Count</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -563,7 +563,10 @@
                     <td><b><%= metric %></b></td>
                     <% for (statName of ['rate', 'passes', 'fails']) {
                       let val = metricData.values[statName];
-                      val = val !== undefined ? val.toFixed(2) : val = '-'; %>
+                      val = val !== undefined ? val.toFixed(2) : val = '-';
+                      if(statName === 'rate') {
+                        val = (val * 100).toFixed(2) + '%';
+                      }
                     %>
                       <td class="<%= isThresOK(metricData, statName) %>"><%= val %></td>
                     <% } %> 
