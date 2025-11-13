@@ -558,18 +558,22 @@
                 <tbody>
                   <% for (metric of rateMetrics) { 
                     let metricData = data.metrics[metric];
+                    let isInvertedMetric = metric.includes('_failed');
                   %>
                   <tr>
                     <td><b><%= metric %></b></td>
-                    <% for (statName of ['rate', 'passes', 'fails']) {
-                      let val = metricData.values[statName];
-                      val = val !== undefined ? val.toFixed(2) : val = '-';
-                      if(statName === 'rate') {
-                        val = (val * 100).toFixed(2) + '%';
-                      }
+                    <% 
+                      let rate = metricData.values['rate'];
+                      let passes = isInvertedMetric ? metricData.values['fails'] : metricData.values['passes'];
+                      let fails = isInvertedMetric ? metricData.values['passes'] : metricData.values['fails'];
+                      
+                      let rateVal = rate !== undefined ? (rate * 100).toFixed(2) + '%' : '-';
+                      let passesVal = passes !== undefined ? passes.toFixed(2) : '-';
+                      let failsVal = fails !== undefined ? fails.toFixed(2) : '-';
                     %>
-                      <td class="<%= isThresOK(metricData, statName) %>"><%= val %></td>
-                    <% } %> 
+                      <td class="<%= isThresOK(metricData, 'rate') %>"><%= rateVal %></td>
+                      <td class="<%= isThresOK(metricData, isInvertedMetric ? 'fails' : 'passes') %>"><%= passesVal %></td>
+                      <td class="<%= isThresOK(metricData, isInvertedMetric ? 'passes' : 'fails') %>"><%= failsVal %></td>
                   </tr>
                   <% } %>
                 </tbody>
