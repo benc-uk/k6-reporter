@@ -16,7 +16,7 @@ NOTE: Since v0.49.0 k6 has provided both a realtime web dashboard and end of tes
 
 This extension needs to be added into your K6 test code and utilizes the _handleSummary_ callback hook. When your test completes, a HTML file will be written to the filesystem, containing the report.
 
-> NOTE! Ensure you are running k6 version 1.30.0 or later, as earlier versions do not support ESM modules which is how this extension is distributed.
+> NOTE! Ensure you are running k6 version 1.3.0 or later, as earlier versions do not support ESM modules which is how this extension is distributed.
 
 To use, add this module to your test code.
 
