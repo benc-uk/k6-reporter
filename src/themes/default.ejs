@@ -571,7 +571,12 @@
                       let passesVal = passes !== undefined ? passes.toFixed(2) : '-';
                       let failsVal = fails !== undefined ? fails.toFixed(2) : '-';
                     %>
-                      <td class="<%= isThresOK(metricData, 'rate') %>"><%= rateVal %></td>
+                      <td
+                        class="<%= isThresOK(metricData, 'rate') %>"
+                        title="<%= isInvertedMetric
+                          ? 'Failure rate (for *_failed metrics; aligns with Fail Count)'
+                          : 'Success rate (aligns with Pass Count)' %>"
+                      ><%= rateVal %></td>
                       <td class="<%= isThresOK(metricData, isInvertedMetric ? 'fails' : 'passes') %>"><%= passesVal %></td>
                       <td class="<%= isThresOK(metricData, isInvertedMetric ? 'passes' : 'fails') %>"><%= failsVal %></td>
                   </tr>
