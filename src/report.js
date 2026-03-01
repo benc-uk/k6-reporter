@@ -15,7 +15,10 @@ const version = __VERSION__
 //
 export function htmlReport(data, opts = {}) {
   // Default options
-  opts.title = opts.title || `Test Report: ${new Date().toISOString().slice(0, 16).replace('T', ' ')}`
+  const now = new Date()
+  const pad = (n) => String(n).padStart(2, '0')
+  const localDateTime = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}`
+  opts.title = opts.title || `Test Report: ${localDateTime}`
   opts.debug = opts.debug || false
   opts.theme = opts.theme || 'default'
 
