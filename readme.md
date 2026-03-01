@@ -28,7 +28,7 @@ Import the `htmlReport` function from the bundled module hosted remotely on GitH
 import { htmlReport } from 'https://raw.githubusercontent.com/benc-uk/k6-reporter/latest/dist/bundle.js'
 ```
 
-- Replace `latest` with a version tag (e.g. `3.0.1`) to pin to a specific version, see [releases](https://github.com/benc-uk/k6-reporter/releases/) for available versions
+- Replace `latest` with a version tag (e.g. `3.0.4`) to pin to a specific version, see [releases](https://github.com/benc-uk/k6-reporter/releases/) for available versions
 - Or use `main` to always get the latest development version, which may be unstable or even broken
 
 ### Invoke
